@@ -104,7 +104,8 @@ input[type=range]{width:100%;height:32px;accent-color:var(--accent);margin:0}
 
 /* ---------- 游戏 ---------- */
 #game{position:fixed;inset:0;background:#0b0816;color:#fff;overflow:hidden;z-index:5;touch-action:none}
-#cam{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#0b0816}
+#cam{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0b0816}
+#cam.cover{object-fit:cover}
 #cam.mirror{transform:scaleX(-1)}
 #cv{position:absolute;inset:0}
 #shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(8,6,18,.6) 0,rgba(8,6,18,0) 26%,rgba(8,6,18,0) 52%,rgba(8,6,18,.82) 100%)}
@@ -217,6 +218,15 @@ input[type=range]{width:100%;height:32px;accent-color:var(--accent);margin:0}
           <button type="button" data-facing="environment" aria-pressed="true">后置</button>
           <button type="button" data-facing="user" aria-pressed="false">前置</button>
         </div>
+      </div>
+
+      <div class="opt">
+        <div class="lab">画面显示</div>
+        <div class="seg two" id="segFit">
+          <button type="button" data-fit="contain" aria-pressed="true">完整（不裁切）</button>
+          <button type="button" data-fit="cover" aria-pressed="false">铺满屏幕</button>
+        </div>
+        <p class="hint">觉得画面被放大了，就选「完整」，能看到摄像头拍到的全部范围，屏幕上下会有黑边。</p>
       </div>
 
       <div class="opt">
@@ -335,7 +345,7 @@ const TYPES = {
 
 /* ====== 状态 ====== */
 let actx = null, song = null, rings = [], lyrics = null;
-const opt = { step: 2, sens: 5, offset: 0, facing: 'environment' };
+const opt = { step: 2, sens: 5, offset: 0, facing: 'environment', fit: 'contain' };
 let phase = 'menu';            // menu | count | play | pause | end
 let touchMode = false, cameraOn = false, stream = null, wakeLock = null;
 let src = null, t0 = 0, raf = 0, runId = 0, stats;
@@ -648,9 +658,15 @@ async function startCamera(){
   if(!window.isSecureContext) throw { name: 'Insecure' };
   if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw { name: 'NoMedia' };
   stream = await navigator.mediaDevices.getUserMedia({
-    video: { facingMode: { ideal: opt.facing }, width: { ideal: 540 }, height: { ideal: 960 } }, audio: false
+    video: { facingMode: { ideal: opt.facing }, width: { ideal: 720 }, height: { ideal: 960 } }, audio: false
   });
+  // 尽量用最广的取景：如果这台手机允许，把缩放拉到最小
+  try{
+    const tr = stream.getVideoTracks()[0], caps = tr.getCapabilities && tr.getCapabilities();
+    if(caps && caps.zoom) await tr.applyConstraints({ advanced: [{ zoom: caps.zoom.min }] });
+  }catch(e){}
   video.classList.toggle('mirror', opt.facing === 'user');
+  video.classList.toggle('cover', opt.fit === 'cover');
   video.srcObject = stream;
   await video.play();
   cameraOn = true;
@@ -705,6 +721,7 @@ function renderSongCard(){
   $('#sCnt').textContent = '共 ' + pickBeats(opt.step).length + ' 个动作';
   document.querySelectorAll('#segStep button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.step === opt.step)));
   document.querySelectorAll('#segCam button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.facing === opt.facing)));
+  document.querySelectorAll('#segFit button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.fit === opt.fit)));
   const gap = (60 / song.info.bpm * opt.step).toFixed(2);
   $('#stepHint').textContent = '平均每 ' + gap + ' 秒一个动作' + (gap < 0.7 ? '，节奏很快，腿会比较累。' : '。');
 }
@@ -745,6 +762,7 @@ $('#lrcIn').addEventListener('change', async e => {
 });
 document.querySelectorAll('#segStep button').forEach(b => b.addEventListener('click', () => { opt.step = +b.dataset.step; renderSongCard(); }));
 document.querySelectorAll('#segCam button').forEach(b => b.addEventListener('click', () => { opt.facing = b.dataset.facing; renderSongCard(); }));
+document.querySelectorAll('#segFit button').forEach(b => b.addEventListener('click', () => { opt.fit = b.dataset.fit; renderSongCard(); }));
 $('#rSens').addEventListener('input', e => { opt.sens = +e.target.value; $('#oSens').textContent = opt.sens; });
 $('#rOff').addEventListener('input', e => { opt.offset = +e.target.value; $('#oOff').textContent = (opt.offset > 0 ? '+' : '') + opt.offset + ' ms'; });
 $('#startBtn').addEventListener('click', () => beginGame('cam'));
@@ -1016,9 +1034,10 @@ function drawEffects(now){
 }
 
 function toScreen(p){
-  const vw = video.videoWidth, vh = video.videoHeight, sc = Math.max(W / vw, H / vh);
-  const sw = W / sc, sh = H / sc, sx = (vw - sw) / 2, sy = (vh - sh) / 2;
-  let x = (p.x * vw - sx) * sc; const y = (p.y * vh - sy) * sc;
+  const vw = video.videoWidth, vh = video.videoHeight;
+  const sc = opt.fit === 'cover' ? Math.max(W / vw, H / vh) : Math.min(W / vw, H / vh);
+  const dw = vw * sc, dh = vh * sc;
+  let x = (W - dw) / 2 + p.x * dw; const y = (H - dh) / 2 + p.y * dh;
   if(opt.facing === 'user') x = W - x;
   return { x, y };
 }
