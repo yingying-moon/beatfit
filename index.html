@@ -140,7 +140,22 @@ input[type=range]{width:100%;height:32px;accent-color:var(--accent);margin:0}
 
 #testBar{position:absolute;left:14px;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);display:grid;gap:10px;text-align:center;pointer-events:auto;z-index:3}
 #testBar p{margin:0;font-size:14px;line-height:1.6;text-shadow:0 1px 4px rgba(0,0,0,.95)}
-#game.testing #hud{display:none}
+#game.testing #hud,#game.calibrating #hud{display:none}
+#game.calibrating #testBar{display:none}
+#calib{position:absolute;inset:0;z-index:4;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 16px)}
+.cal-top{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.cal-step{font-size:14px;font-weight:700;opacity:.9;text-shadow:0 1px 4px rgba(0,0,0,.9)}
+.cal-pill{display:flex;align-items:center;gap:12px;padding:8px 22px 8px 16px;border-radius:99px;background:rgba(10,8,25,.72);font-weight:900;font-size:34px;line-height:1.2}
+.cal-hint{font-size:15px;line-height:1.5;text-shadow:0 1px 4px rgba(0,0,0,.95)}
+.cal-panel{pointer-events:auto;background:rgba(10,8,25,.8);border-radius:20px;padding:16px;display:grid;gap:12px;text-align:center}
+#calMsg{font-size:16px;font-weight:700;line-height:1.5}
+.cal-bar{height:8px;border-radius:8px;background:rgba(255,255,255,.2);overflow:hidden}
+.cal-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8f70ff,#ff5d94)}
+.cal-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cal-btns .btn{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.22);color:#fff;min-height:46px}
+.cal-btns .btn.primary{background:var(--accent);border-color:transparent}
+#testBar .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#testBar .btn:not(.primary){background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.22);color:#fff}
 .overlay{position:absolute;inset:0;display:grid;place-items:center;text-align:center;background:rgba(8,6,20,.55);pointer-events:auto}
 #count{background:rgba(8,6,20,.42)}
 #count .n{font-size:132px;font-weight:900;line-height:1;text-shadow:0 0 30px rgba(143,112,255,.9);animation:pop .3s ease-out}
@@ -174,7 +189,7 @@ input[type=range]{width:100%;height:32px;accent-color:var(--accent);margin:0}
       <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="15" fill="none" stroke="var(--accent)" stroke-width="3"/><circle cx="17" cy="17" r="8" fill="var(--pink)"/><circle cx="17" cy="17" r="3" fill="#fff"/></svg>
       <h1>卡点燃脂</h1>
     </div>
-    <p class="tagline">躺着练腿。把手机立在脚边，用后置摄像头对着你的腿，跟着鼓点做「开」和「交叉」。</p>
+    <p class="tagline">躺着练腿。把手机立在脚边，后置摄像头只要拍到你的腿就行，不用拍到头。跟着鼓点做「开」和「交叉」。</p>
 
     <div class="hero" aria-hidden="true">
       <div class="lane"><div class="tgt"></div><div class="dot x">交叉</div><div class="dot o">开</div></div>
@@ -205,6 +220,14 @@ input[type=range]{width:100%;height:32px;accent-color:var(--accent);margin:0}
     <section class="card" id="camCard">
       <div class="song-title">摄像头与腿部识别</div>
       <div class="opt">
+        <div class="lab">识别方式</div>
+        <div class="seg two" id="segRec">
+          <button type="button" data-rec="calib" aria-pressed="true">校准识别</button>
+          <button type="button" data-rec="pose" aria-pressed="false">骨架识别</button>
+        </div>
+        <p class="hint" id="recHint"></p>
+      </div>
+      <div class="opt">
         <div class="lab">摄像头</div>
         <div class="seg two" id="segCam">
           <button type="button" data-facing="environment" aria-pressed="true">后置</button>
@@ -218,7 +241,7 @@ input[type=range]{width:100%;height:32px;accent-color:var(--accent);margin:0}
           <button type="button" data-fit="cover" aria-pressed="false">铺满屏幕</button>
         </div>
       </div>
-      <div class="opt">
+      <div class="opt" id="accOpt">
         <div class="lab">识别精度</div>
         <div class="seg two" id="segAcc">
           <button type="button" data-acc="0" aria-pressed="false">标准（快）</button>
@@ -269,8 +292,8 @@ input[type=range]{width:100%;height:32px;accent-color:var(--accent);margin:0}
     </section>
 
     <ul class="tips">
-      <li>手机立在床尾或地上，后置摄像头对着你，让髋部到脚踝都入镜。</li>
-      <li>光线充足，穿和床单不同颜色的裤子，识别会更稳。</li>
+      <li>开始前会做一次约 10 秒的校准：先摆「开」，再摆「交叉」，让手机记住你的两个动作。校准之后不要再挪手机。</li>
+      <li>手机立稳，腿在画面里越清楚越好；光线亮一些，裤子和背景颜色区别大一点，识别更稳。</li>
       <li>画面只在你的手机里处理，不会上传。</li>
     </ul>
   </div>
@@ -308,9 +331,21 @@ input[type=range]{width:100%;height:32px;accent-color:var(--accent);margin:0}
     </div>
   </div>
   <div id="count" class="overlay hidden"><div><div class="n" id="countN">3</div><p id="countTxt"></p></div></div>
+  <div id="calib" class="hidden">
+    <div class="cal-top">
+      <div class="cal-step" id="calStep">第 1 步 / 2</div>
+      <div class="cal-pill"><span id="calIcon"></span><span id="calPose">开</span></div>
+      <div class="cal-hint" id="calHint"></div>
+    </div>
+    <div class="cal-panel">
+      <div id="calMsg"></div>
+      <div class="cal-bar"><i id="calFill"></i></div>
+      <div class="cal-btns"><button class="btn" id="calCancel" type="button">退出</button><button class="btn primary hidden" id="calRetry" type="button">重新校准</button></div>
+    </div>
+  </div>
   <div id="testBar" class="hidden">
-    <p>让全身（包括头）都入镜，慢慢做「开」和「交叉」。屏幕上能看到腿部骨架，并显示当前动作，就说明识别成功了。</p>
-    <button class="btn primary" id="testQuit">结束测试</button>
+    <p id="testTip"></p>
+    <div class="two"><button class="btn hidden" id="testRecal" type="button">重新校准</button><button class="btn primary" id="testQuit" type="button">结束测试</button></div>
   </div>
   <div id="pauseMenu" class="overlay hidden">
     <div class="panel">
@@ -363,7 +398,7 @@ const TYPES = {
 
 /* ====== 状态 ====== */
 let actx = null, song = null, rings = [], lyrics = null;
-const opt = { step: 2, sens: 5, offset: 0, facing: 'environment', fit: 'contain', acc: 1 };
+const opt = { step: 2, sens: 5, offset: 0, facing: 'environment', fit: 'contain', acc: 1, rec: 'calib' };
 let phase = 'menu';            // menu | count | play | pause | end
 let touchMode = false, cameraOn = false, stream = null, wakeLock = null;
 let src = null, t0 = 0, raf = 0, runId = 0, stats;
@@ -619,6 +654,127 @@ let pose = null, poseReady = false, poseRun = 0, gotResult = false, poseStartT =
 let lm = null, lmT = 0, curLabel = 'none', curLabelT = 0, dbg = { n: 0, la: 0, ra: 0, r: null };
 let touchLabel = 'none', touchUntil = 0;
 
+
+/* =================================================================
+   校准识别：不需要头部，只学「开」和「交叉」两张画面的差别
+   ================================================================= */
+// <calib>
+function makeModel(fo, fc){
+  const n = fo[0].length;
+  const mo = new Float32Array(n), mc = new Float32Array(n);
+  for(const f of fo) for(let i = 0; i < n; i++) mo[i] += f[i];
+  for(const f of fc) for(let i = 0; i < n; i++) mc[i] += f[i];
+  for(let i = 0; i < n; i++){ mo[i] /= fo.length; mc[i] /= fc.length; }
+  const w = new Float32Array(n); let ww = 0;
+  for(let i = 0; i < n; i++){ w[i] = mo[i] - mc[i]; ww += w[i] * w[i]; }
+  const rms = Math.sqrt(ww / n);
+  if(rms < 2.5) return { ok: false, rms };
+  const wn = new Float32Array(n); let c = 0;
+  for(let i = 0; i < n; i++){ wn[i] = 2 * w[i] / ww; c += 0.5 * (mo[i] + mc[i]) * wn[i]; }
+  const model = { wn, c, n };
+  const so = fo.map(f => scoreFrame(model, f)), sc = fc.map(f => scoreFrame(model, f));
+  const std = a => { const m = a.reduce((x, y) => x + y, 0) / a.length; return Math.sqrt(a.reduce((x, y) => x + (y - m) * (y - m), 0) / a.length); };
+  const noise = (std(so) + std(sc)) / 2;
+  const okO = so.filter(v => v > 0.3).length / so.length, okC = sc.filter(v => v < -0.3).length / sc.length;
+  return { ok: okO >= 0.85 && okC >= 0.85 && noise < 0.5, rms, noise, okO, okC, model };
+}
+function scoreFrame(model, f){
+  let s = 0; const wn = model.wn;
+  for(let i = 0; i < model.n; i++) s += f[i] * wn[i];
+  return s - model.c;
+}
+// </calib>
+
+let model = null, sSm = 0, lastCal = 0, fcv = null, fx = null, calAbort = false, calRetryResolve = null;
+function grabFeature(){
+  const vw = video.videoWidth, vh = video.videoHeight;
+  if(!vw || video.readyState < 2) return null;
+  const fw = 40, fh = Math.max(8, Math.round(fw * vh / vw));
+  if(!fcv) fcv = document.createElement('canvas');
+  if(fcv.width !== fw || fcv.height !== fh){ fcv.width = fw; fcv.height = fh; fx = fcv.getContext('2d', { willReadFrequently: true }); }
+  fx.drawImage(video, 0, 0, fw, fh);
+  const d = fx.getImageData(0, 0, fw, fh).data, n = fw * fh, out = new Float32Array(n * 3);
+  let sr = 0, sg = 0, sb = 0;
+  for(let i = 0, j = 0; i < n; i++, j += 4){
+    out[i * 3] = d[j]; out[i * 3 + 1] = d[j + 1]; out[i * 3 + 2] = d[j + 2];
+    sr += d[j]; sg += d[j + 1]; sb += d[j + 2];
+  }
+  sr /= n; sg /= n; sb /= n;                               // 去掉整体亮度变化（自动曝光）
+  for(let i = 0; i < n; i++){ out[i * 3] -= sr; out[i * 3 + 1] -= sg; out[i * 3 + 2] -= sb; }
+  return out;
+}
+function sampleCalib(now){
+  if(now - lastCal < 30) return; lastCal = now;
+  const f = grabFeature(); if(!f || !model || f.length !== model.n) return;
+  sSm = 0.55 * sSm + 0.45 * scoreFrame(model, f);
+  const thr = 0.5 - 0.04 * opt.sens;
+  curLabel = sSm > thr ? 'open' : (sSm < -thr ? 'cross' : 'none'); curLabelT = now;
+}
+async function waitMs(ms, my){
+  const t = performance.now();
+  while(performance.now() - t < ms){ if(my !== runId || calAbort) return false; await sleep(40); }
+  return true;
+}
+const CAL_ICON = {
+  open: '<svg width="38" height="38" viewBox="0 0 34 34" fill="none" stroke="#7dffe0" stroke-width="3.4" stroke-linecap="round"><path d="M17 4 L6 30 M17 4 L28 30"/></svg>',
+  cross: '<svg width="38" height="38" viewBox="0 0 34 34" fill="none" stroke="#ff9bff" stroke-width="3.4" stroke-linecap="round"><path d="M9 4 L25 30 M25 4 L9 30"/></svg>'
+};
+async function captureStage(type, stepNo, my){
+  const label = TYPES[type].label;
+  $('#calStep').textContent = '校准 第 ' + stepNo + ' 步 / 2';
+  $('#calPose').textContent = label; $('#calPose').style.color = TYPES[type].glow;
+  $('#calIcon').innerHTML = CAL_ICON[type];
+  $('#calHint').textContent = type === 'open' ? '双腿向两侧分开，摆好后保持不动' : '双腿在中间交叉，摆好后保持不动';
+  $('#calFill').style.width = '0%'; $('#calRetry').classList.add('hidden');
+  for(let n = 3; n >= 1; n--){
+    $('#calMsg').textContent = '请摆好「' + label + '」…  ' + n;
+    if(!await waitMs(1000, my)) return null;
+  }
+  $('#calMsg').textContent = '保持不动，正在记录…';
+  const frames = [], T0 = performance.now();
+  while(true){
+    const e = performance.now() - T0; if(e >= 2000) break;
+    if(my !== runId || calAbort) return null;
+    const f = grabFeature(); if(f) frames.push(f);
+    $('#calFill').style.width = (e / 20) + '%';
+    await sleep(70);
+  }
+  $('#calFill').style.width = '100%';
+  return frames;
+}
+async function runCalibration(my){
+  calAbort = false;
+  const g = $('#game'); g.classList.add('calibrating'); $('#calib').classList.remove('hidden');
+  try{
+    while(true){
+      const fo = await captureStage('open', 1, my); if(!fo) return false;
+      const fc = await captureStage('cross', 2, my); if(!fc) return false;
+      let msg;
+      if(fo.length < 8 || fc.length < 8 || fo[0].length !== fc[0].length) msg = '摄像头画面不稳定，请重试一次。';
+      else{
+        const r = makeModel(fo, fc);
+        if(r.ok){ model = r.model; sSm = 0; $('#calMsg').textContent = '校准完成！别再挪手机'; await sleep(700); return true; }
+        msg = r.rms < 2.5
+          ? '画面里「开」和「交叉」几乎没有区别。请让双腿更多入镜、动作再大一点，然后重新校准。'
+          : '两个动作记录得不太稳（腿在晃，或光线在变）。请摆好后保持不动，然后重新校准。';
+      }
+      $('#calMsg').textContent = msg; $('#calFill').style.width = '0%'; $('#calRetry').classList.remove('hidden');
+      const again = await new Promise(res => { calRetryResolve = res; });
+      if(!again || my !== runId) return false;
+    }
+  }finally{
+    g.classList.remove('calibrating'); $('#calib').classList.add('hidden'); calRetryResolve = null;
+  }
+}
+$('#calCancel').addEventListener('click', () => { calAbort = true; if(calRetryResolve) calRetryResolve(false); });
+$('#calRetry').addEventListener('click', () => { if(calRetryResolve) calRetryResolve(true); });
+async function recalibrate(){
+  const my = ++runId; phase = 'calib';
+  await runCalibration(my);
+  if(my === runId) phase = 'test';
+}
+$('#testRecal').addEventListener('click', recalibrate);
+
 function loadScript(srcUrl){
   return new Promise((res, rej) => {
     const s = document.createElement('script'); s.src = srcUrl; s.onload = res;
@@ -751,6 +907,11 @@ function renderCamOpts(){
   document.querySelectorAll('#segCam button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.facing === opt.facing)));
   document.querySelectorAll('#segFit button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.fit === opt.fit)));
   document.querySelectorAll('#segAcc button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.acc === opt.acc)));
+  document.querySelectorAll('#segRec button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.rec === opt.rec)));
+  $('#accOpt').classList.toggle('hidden', opt.rec !== 'pose');
+  $('#recHint').textContent = opt.rec === 'calib'
+    ? '不用拍到头，只要腿在画面里就行。开始前先教手机认一下你的「开」和「交叉」，之后别挪手机。'
+    : '需要把整个人（包括头）拍进画面，手机会自己找出你的腿。躺着举腿时不太稳。';
 }
 renderCamOpts();
 
@@ -792,6 +953,7 @@ document.querySelectorAll('#segStep button').forEach(b => b.addEventListener('cl
 document.querySelectorAll('#segCam button').forEach(b => b.addEventListener('click', () => { opt.facing = b.dataset.facing; renderCamOpts(); }));
 document.querySelectorAll('#segFit button').forEach(b => b.addEventListener('click', () => { opt.fit = b.dataset.fit; renderCamOpts(); }));
 document.querySelectorAll('#segAcc button').forEach(b => b.addEventListener('click', () => { opt.acc = +b.dataset.acc; renderCamOpts(); }));
+document.querySelectorAll('#segRec button').forEach(b => b.addEventListener('click', () => { opt.rec = b.dataset.rec; renderCamOpts(); }));
 $('#testBtn').addEventListener('click', beginTest);
 $('#testQuit').addEventListener('click', () => quitToMenu());
 $('#rSens').addEventListener('input', e => { opt.sens = +e.target.value; $('#oSens').textContent = opt.sens; });
@@ -838,20 +1000,25 @@ function resetStats(){
   $('#combo').classList.remove('on');
 }
 
+async function preparePose(){
+  showStatus('正在加载动作识别模型（首次约 ' + (opt.acc ? '15' : '12') + 'MB，请稍等）…');
+  try{ await withTimeout(loadPose(), 120000); }
+  catch(e){
+    stopCamera(); showStatus('');
+    showMenuErr('动作识别模型没有加载成功，请检查网络后重试，或者改用「校准识别」。');
+    return false;
+  }
+  showStatus(''); applyPoseOptions();
+  return true;
+}
+
 async function beginGame(mode){
   ensureCtx(); showMenuErr('');
   touchMode = mode === 'touch';
   if(!touchMode){
     try{ await startCamera(); }
     catch(e){ showMenuErr(camErrMsg(e)); return; }
-    showStatus('正在加载动作识别模型（首次约 12MB，请稍等）…');
-    try{ await withTimeout(loadPose(), 120000); }
-    catch(e){
-      stopCamera(); showStatus('');
-      showMenuErr('动作识别模型没有加载成功，请检查网络后重试。也可以先用“用手指试玩”。');
-      return;
-    }
-    showStatus(''); applyPoseOptions();
+    if(opt.rec === 'pose' && !(await preparePose())) return;
   }
   buildRings();
   $('#songName').textContent = song.name;
@@ -864,13 +1031,19 @@ async function beginGame(mode){
   resize(); resetStats();
   try{ if('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); }catch(e){}
   const my = ++runId;
+  if(!touchMode && opt.rec === 'calib'){
+    phase = 'calib'; if(!raf) raf = requestAnimationFrame(frame);
+    const ok = await runCalibration(my);
+    if(my !== runId) return;
+    if(!ok){ quitToMenu(); return; }
+  }
   phase = 'count';
-  if(!touchMode){ clf.reset(); gotResult = false; poseStartT = performance.now(); poseLoop(++poseRun); }
+  if(!touchMode && opt.rec === 'pose'){ clf.reset(); gotResult = false; poseStartT = performance.now(); poseLoop(++poseRun); }
   if(!raf) raf = requestAnimationFrame(frame);
   const cnt = $('#count'); cnt.classList.remove('hidden');
   $('#countTxt').textContent = touchMode
     ? '按住下方的「开」或「交叉」按钮来做动作'
-    : '把手机立在床尾，后置摄像头对着你\n躺好，让髋部到脚踝都入镜';
+    : (opt.rec === 'calib' ? '校准完成，别再挪手机\n准备开始，先把腿抬起来' : '把手机立在床尾，后置摄像头对着你\n躺好，让髋部到脚踝都入镜');
   $('#countTxt').style.whiteSpace = 'pre-line';
   for(let n = 3; n >= 1; n--){
     if(my !== runId) return;
@@ -886,15 +1059,24 @@ async function beginTest(){
   ensureCtx(); showMenuErr(''); touchMode = false;
   try{ await startCamera(); }
   catch(e){ showMenuErr(camErrMsg(e)); return; }
-  showStatus('正在加载动作识别模型（首次约 ' + (opt.acc ? '15' : '12') + 'MB，请稍等）…');
-  try{ await withTimeout(loadPose(), 120000); }
-  catch(e){ stopCamera(); showStatus(''); showMenuErr('动作识别模型没有加载成功，请检查网络后重试。'); return; }
-  showStatus(''); applyPoseOptions();
+  if(opt.rec === 'pose' && !(await preparePose())) return;
   const g = $('#game'); g.classList.remove('hidden'); g.classList.add('testing');
   video.classList.remove('hidden'); $('#testBar').classList.remove('hidden');
+  $('#testRecal').classList.toggle('hidden', opt.rec !== 'calib');
+  $('#testTip').textContent = opt.rec === 'calib'
+    ? '现在做「开」和「交叉」，看上面的条：偏右是「开」，偏左是「交叉」。能显示「当前动作」就说明识别成功了。'
+    : '让全身（包括头）都入镜，慢慢做「开」和「交叉」。屏幕上能看到腿部骨架，并显示当前动作，就说明识别成功了。';
   $('#menu').classList.add('hidden'); $('#result').classList.add('hidden'); $('#count').classList.add('hidden');
-  resize(); phase = 'test'; clf.reset(); gotResult = false; lm = null; poseStartT = performance.now();
-  poseLoop(++poseRun);
+  resize();
+  const my = ++runId;
+  if(opt.rec === 'calib'){
+    phase = 'calib'; if(!raf) raf = requestAnimationFrame(frame);
+    const ok = await runCalibration(my);
+    if(my !== runId) return;
+    if(!ok){ quitToMenu(); return; }
+  }
+  phase = 'test';
+  if(opt.rec === 'pose'){ clf.reset(); gotResult = false; lm = null; poseStartT = performance.now(); poseLoop(++poseRun); }
   if(!raf) raf = requestAnimationFrame(frame);
 }
 
@@ -1090,7 +1272,7 @@ function toScreen(p){
   return { x, y };
 }
 function drawSkeleton(now){
-  if(touchMode || !cameraOn || !video.videoWidth || !lm || now - lmT > 500) return;
+  if(opt.rec !== 'pose' || touchMode || !cameraOn || !video.videoWidth || !lm || now - lmT > 500) return;
   const col = curLabel === 'open' ? '#3dffd0' : (curLabel === 'cross' ? '#ff7bff' : 'rgba(255,255,255,.9)');
   const vis = p => p && (p.visibility === undefined || p.visibility > VIS);
   cx.save(); cx.lineCap = 'round';
@@ -1118,6 +1300,11 @@ function drawChip(now, x0, y){
   let txt, col = 'rgba(255,255,255,.9)';
   const legsSeen = lm && lm[27] && lm[28] && (lm[27].visibility === undefined || lm[27].visibility > VIS) && (lm[28].visibility === undefined || lm[28].visibility > VIS);
   if(touchMode){ const l = currentLabel(now); txt = l === 'none' ? '按住按钮做动作' : '当前：' + TYPES[l].label; }
+  else if(opt.rec === 'calib'){
+    const l = currentLabel(now);
+    txt = !model ? '还没校准' : (l === 'none' ? '识别中…' : '当前动作：' + TYPES[l].label);
+    if(l !== 'none') col = TYPES[l].glow;
+  }
   else if(!gotResult){ txt = now - poseStartT > 12000 ? '动作识别没有响应，请刷新页面重试' : '动作识别启动中…'; }
   else if(!lm || now - lmT > 500){ txt = '没认出人：请让全身（含头）入镜'; col = '#ffb3c8'; }
   else if(!legsSeen){ txt = '认出人了，但看不到脚踝：让脚入镜'; col = '#ffd98a'; }
@@ -1132,7 +1319,19 @@ function drawChip(now, x0, y){
   cx.beginPath(); if(cx.roundRect) cx.roundRect(x, y, w, h, 15); else cx.rect(x, y, w, h);
   cx.fillStyle = 'rgba(10,8,25,.72)'; cx.fill();
   cx.fillStyle = col; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText(txt, x + w / 2, y + h / 2 + 1);
-  if(!touchMode && gotResult){
+  if(!touchMode && opt.rec === 'calib' && model){
+    const bw = 190, bx = Math.max(12, Math.min(W - bw - 12, x0 - bw / 2)), by = y + h + 18;
+    const pos = v => bx + bw * (0.5 + clamp(v, -1.5, 1.5) / 3), thr = 0.5 - 0.04 * opt.sens;
+    cx.fillStyle = 'rgba(10,8,25,.72)'; cx.beginPath(); if(cx.roundRect) cx.roundRect(bx - 8, by - 14, bw + 16, 34, 12); else cx.rect(bx - 8, by - 14, bw + 16, 34); cx.fill();
+    cx.fillStyle = 'rgba(255,255,255,.28)'; cx.fillRect(bx, by - 3, bw, 6);
+    cx.fillStyle = 'rgba(224,77,255,.55)'; cx.fillRect(pos(-thr) - (pos(-thr) - bx), by - 3, pos(-thr) - bx, 6);
+    cx.fillStyle = 'rgba(61,255,208,.55)'; cx.fillRect(pos(thr), by - 3, bx + bw - pos(thr), 6);
+    cx.fillStyle = curLabel === 'open' ? '#3dffd0' : (curLabel === 'cross' ? '#ff7bff' : '#fff');
+    cx.beginPath(); cx.arc(pos(sSm), by, 7, 0, TAU); cx.fill();
+    cx.font = '11px system-ui,sans-serif'; cx.fillStyle = 'rgba(255,255,255,.8)'; cx.textAlign = 'left'; cx.fillText('交叉', bx, by + 15);
+    cx.textAlign = 'right'; cx.fillText('开', bx + bw, by + 15);
+  }
+  if(!touchMode && opt.rec === 'pose' && gotResult){
     const d = '关键点 ' + dbg.n + '/33 · 左踝 ' + dbg.la.toFixed(2) + ' 右踝 ' + dbg.ra.toFixed(2) + (dbg.r == null ? '' : ' · 间距比 ' + dbg.r.toFixed(1));
     cx.font = '12px system-ui,sans-serif'; cx.fillStyle = 'rgba(255,255,255,.75)';
     cx.shadowColor = 'rgba(0,0,0,.9)'; cx.shadowBlur = 4;
@@ -1168,7 +1367,9 @@ function updateHud(t){
 function frame(now){
   raf = requestAnimationFrame(frame);
   if(!W) return;
+  if(opt.rec === 'calib' && !touchMode && cameraOn && model && (phase === 'count' || phase === 'play' || phase === 'pause' || phase === 'test')) sampleCalib(now);
   cx.clearRect(0, 0, W, H);
+  if(phase === 'calib') return;
   if(touchMode){
     const g = cx.createLinearGradient(0, 0, W, H);
     g.addColorStop(0, '#1a1240'); g.addColorStop(1, '#3a1240');
@@ -1191,7 +1392,7 @@ function frame(now){
 }
 
 /* 调试/自动化测试用的只读入口 */
-window.__beatfit = { get phase(){ return phase; }, get rings(){ return rings; }, get stats(){ return stats; }, songTime: () => songTime(), get gotResult(){ return gotResult; }, get hasLandmarks(){ return !!lm; }, get label(){ return currentLabel(performance.now()); } };
+window.__beatfit = { get sSm(){ return sSm; }, get model(){ return !!model; }, get phase(){ return phase; }, get rings(){ return rings; }, get stats(){ return stats; }, songTime: () => songTime(), get gotResult(){ return gotResult; }, get hasLandmarks(){ return !!lm; }, get label(){ return currentLabel(performance.now()); } };
 
 if('serviceWorker' in navigator && location.protocol.startsWith('http')){
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
