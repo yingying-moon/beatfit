@@ -138,6 +138,9 @@ input[type=range]{width:100%;height:32px;accent-color:var(--accent);margin:0}
 .stats b{display:block;font-size:20px;font-weight:800;font-variant-numeric:tabular-nums}
 .stats span{font-size:11.5px;opacity:.75}
 
+#testBar{position:absolute;left:14px;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);display:grid;gap:10px;text-align:center;pointer-events:auto;z-index:3}
+#testBar p{margin:0;font-size:14px;line-height:1.6;text-shadow:0 1px 4px rgba(0,0,0,.95)}
+#game.testing #hud{display:none}
 .overlay{position:absolute;inset:0;display:grid;place-items:center;text-align:center;background:rgba(8,6,20,.55);pointer-events:auto}
 #count{background:rgba(8,6,20,.42)}
 #count .n{font-size:132px;font-weight:900;line-height:1;text-shadow:0 0 30px rgba(143,112,255,.9);animation:pop .3s ease-out}
@@ -199,6 +202,33 @@ input[type=range]{width:100%;height:32px;accent-color:var(--accent);margin:0}
     <div id="status" class="status hidden"><span class="spin"></span><span id="statusTxt"></span></div>
     <div id="menuErr" class="err hidden" role="alert"></div>
 
+    <section class="card" id="camCard">
+      <div class="song-title">摄像头与腿部识别</div>
+      <div class="opt">
+        <div class="lab">摄像头</div>
+        <div class="seg two" id="segCam">
+          <button type="button" data-facing="environment" aria-pressed="true">后置</button>
+          <button type="button" data-facing="user" aria-pressed="false">前置</button>
+        </div>
+      </div>
+      <div class="opt">
+        <div class="lab">画面显示</div>
+        <div class="seg two" id="segFit">
+          <button type="button" data-fit="contain" aria-pressed="true">完整（不裁切）</button>
+          <button type="button" data-fit="cover" aria-pressed="false">铺满屏幕</button>
+        </div>
+      </div>
+      <div class="opt">
+        <div class="lab">识别精度</div>
+        <div class="seg two" id="segAcc">
+          <button type="button" data-acc="0" aria-pressed="false">标准（快）</button>
+          <button type="button" data-acc="1" aria-pressed="true">增强（更准）</button>
+        </div>
+        <p class="hint">腿老是识别不到时用「增强」。手机较旧、画面卡顿时换回「标准」。</p>
+      </div>
+      <div class="actions"><button class="btn primary" id="testBtn">先测试一下腿部识别（不用选歌）</button></div>
+    </section>
+
     <section id="songCard" class="card hidden" aria-live="polite">
       <div class="song-title" id="sName"></div>
       <div class="song-meta"><span class="chip" id="sBpm"></span><span class="chip" id="sDur"></span><span class="chip" id="sCnt"></span></div>
@@ -210,23 +240,6 @@ input[type=range]{width:100%;height:32px;accent-color:var(--accent);margin:0}
           <label class="mini">导入 .lrc 歌词<input type="file" id="lrcIn" accept=".lrc,.txt,text/plain"></label>
         </div>
         <p class="hint">如果 mp3 里自带带时间的歌词，会自动读取。没有的话，导入同名的 .lrc 文件即可。</p>
-      </div>
-
-      <div class="opt">
-        <div class="lab">摄像头</div>
-        <div class="seg two" id="segCam">
-          <button type="button" data-facing="environment" aria-pressed="true">后置</button>
-          <button type="button" data-facing="user" aria-pressed="false">前置</button>
-        </div>
-      </div>
-
-      <div class="opt">
-        <div class="lab">画面显示</div>
-        <div class="seg two" id="segFit">
-          <button type="button" data-fit="contain" aria-pressed="true">完整（不裁切）</button>
-          <button type="button" data-fit="cover" aria-pressed="false">铺满屏幕</button>
-        </div>
-        <p class="hint">觉得画面被放大了，就选「完整」，能看到摄像头拍到的全部范围，屏幕上下会有黑边。</p>
       </div>
 
       <div class="opt">
@@ -295,6 +308,10 @@ input[type=range]{width:100%;height:32px;accent-color:var(--accent);margin:0}
     </div>
   </div>
   <div id="count" class="overlay hidden"><div><div class="n" id="countN">3</div><p id="countTxt"></p></div></div>
+  <div id="testBar" class="hidden">
+    <p>让全身（包括头）都入镜，慢慢做「开」和「交叉」。屏幕上能看到腿部骨架，并显示当前动作，就说明识别成功了。</p>
+    <button class="btn primary" id="testQuit">结束测试</button>
+  </div>
   <div id="pauseMenu" class="overlay hidden">
     <div class="panel">
       <h2>已暂停</h2>
@@ -332,6 +349,7 @@ const $ = s => document.querySelector(s);
 const clamp = (v,a,b) => Math.min(b, Math.max(a, v));
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const TAU = Math.PI * 2;
+const VIS = 0.12;            // 关键点可见度下限（躺着举腿时模型给的可见度偏低，所以放宽）
 
 /* ====== 参数 ====== */
 const APPROACH = 2.6;      // 圆环从屏幕右边滑到判定圈用时（秒）
@@ -345,7 +363,7 @@ const TYPES = {
 
 /* ====== 状态 ====== */
 let actx = null, song = null, rings = [], lyrics = null;
-const opt = { step: 2, sens: 5, offset: 0, facing: 'environment', fit: 'contain' };
+const opt = { step: 2, sens: 5, offset: 0, facing: 'environment', fit: 'contain', acc: 1 };
 let phase = 'menu';            // menu | count | play | pause | end
 let touchMode = false, cameraOn = false, stream = null, wakeLock = null;
 let src = null, t0 = 0, raf = 0, runId = 0, stats;
@@ -598,7 +616,7 @@ function makeClassifier(){
 const clf = makeClassifier();
 
 let pose = null, poseReady = false, poseRun = 0, gotResult = false, poseStartT = 0;
-let lm = null, lmT = 0, curLabel = 'none', curLabelT = 0;
+let lm = null, lmT = 0, curLabel = 'none', curLabelT = 0, dbg = { n: 0, la: 0, ra: 0, r: null };
 let touchLabel = 'none', touchUntil = 0;
 
 function loadScript(srcUrl){
@@ -608,11 +626,15 @@ function loadScript(srcUrl){
   });
 }
 const withTimeout = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))]);
+function applyPoseOptions(){
+  if(!pose) return;
+  pose.setOptions({ modelComplexity: opt.acc, smoothLandmarks: true, enableSegmentation: false, minDetectionConfidence: 0.3, minTrackingConfidence: 0.3 });
+}
 async function loadPose(){
   if(poseReady) return;
   if(!window.Pose) await loadScript('pose/pose.js');
   pose = new window.Pose({ locateFile: f => 'pose/' + f });
-  pose.setOptions({ modelComplexity: 0, smoothLandmarks: true, enableSegmentation: false, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
+  applyPoseOptions();
   pose.onResults(onPoseResults);
   await pose.initialize();
   poseReady = true;
@@ -620,7 +642,7 @@ async function loadPose(){
 
 function legRatio(l){
   const vw = video.videoWidth || 1, vh = video.videoHeight || 1;
-  const ok = p => p && (p.visibility === undefined || p.visibility > 0.3);
+  const ok = p => p && (p.visibility === undefined || p.visibility > VIS);
   const dist = (a, b) => Math.hypot((a.x - b.x) * vw, (a.y - b.y) * vh);
   const lh = l[23], rh = l[24], la = l[27], ra = l[28];
   if(!ok(la) || !ok(ra)) return null;
@@ -638,6 +660,7 @@ function onPoseResults(res){
   const r = legRatio(lm);
   curLabel = r == null ? 'none' : clf.push(r, lmT, opt.sens);
   curLabelT = lmT;
+  dbg = { n: lm.filter(p => p.visibility === undefined || p.visibility > 0.5).length, la: lm[27] ? lm[27].visibility || 0 : 0, ra: lm[28] ? lm[28].visibility || 0 : 0, r };
 }
 function currentLabel(now){
   if(touchMode) return now < touchUntil ? touchLabel : 'none';
@@ -720,11 +743,16 @@ function renderSongCard(){
   $('#sDur').textContent = fmtDur(song.info.duration);
   $('#sCnt').textContent = '共 ' + pickBeats(opt.step).length + ' 个动作';
   document.querySelectorAll('#segStep button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.step === opt.step)));
-  document.querySelectorAll('#segCam button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.facing === opt.facing)));
-  document.querySelectorAll('#segFit button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.fit === opt.fit)));
   const gap = (60 / song.info.bpm * opt.step).toFixed(2);
   $('#stepHint').textContent = '平均每 ' + gap + ' 秒一个动作' + (gap < 0.7 ? '，节奏很快，腿会比较累。' : '。');
 }
+
+function renderCamOpts(){
+  document.querySelectorAll('#segCam button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.facing === opt.facing)));
+  document.querySelectorAll('#segFit button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.fit === opt.fit)));
+  document.querySelectorAll('#segAcc button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.acc === opt.acc)));
+}
+renderCamOpts();
 
 async function loadFile(file){
   showMenuErr(''); showStatus('正在解码音频…');
@@ -761,8 +789,11 @@ $('#lrcIn').addEventListener('change', async e => {
   }catch(err){ $('#lrcStatus').textContent = '歌词文件读取失败，换一个试试'; }
 });
 document.querySelectorAll('#segStep button').forEach(b => b.addEventListener('click', () => { opt.step = +b.dataset.step; renderSongCard(); }));
-document.querySelectorAll('#segCam button').forEach(b => b.addEventListener('click', () => { opt.facing = b.dataset.facing; renderSongCard(); }));
-document.querySelectorAll('#segFit button').forEach(b => b.addEventListener('click', () => { opt.fit = b.dataset.fit; renderSongCard(); }));
+document.querySelectorAll('#segCam button').forEach(b => b.addEventListener('click', () => { opt.facing = b.dataset.facing; renderCamOpts(); }));
+document.querySelectorAll('#segFit button').forEach(b => b.addEventListener('click', () => { opt.fit = b.dataset.fit; renderCamOpts(); }));
+document.querySelectorAll('#segAcc button').forEach(b => b.addEventListener('click', () => { opt.acc = +b.dataset.acc; renderCamOpts(); }));
+$('#testBtn').addEventListener('click', beginTest);
+$('#testQuit').addEventListener('click', () => quitToMenu());
 $('#rSens').addEventListener('input', e => { opt.sens = +e.target.value; $('#oSens').textContent = opt.sens; });
 $('#rOff').addEventListener('input', e => { opt.offset = +e.target.value; $('#oOff').textContent = (opt.offset > 0 ? '+' : '') + opt.offset + ' ms'; });
 $('#startBtn').addEventListener('click', () => beginGame('cam'));
@@ -820,7 +851,7 @@ async function beginGame(mode){
       showMenuErr('动作识别模型没有加载成功，请检查网络后重试。也可以先用“用手指试玩”。');
       return;
     }
-    showStatus('');
+    showStatus(''); applyPoseOptions();
   }
   buildRings();
   $('#songName').textContent = song.name;
@@ -851,6 +882,22 @@ async function beginGame(mode){
   play();
 }
 
+async function beginTest(){
+  ensureCtx(); showMenuErr(''); touchMode = false;
+  try{ await startCamera(); }
+  catch(e){ showMenuErr(camErrMsg(e)); return; }
+  showStatus('正在加载动作识别模型（首次约 ' + (opt.acc ? '15' : '12') + 'MB，请稍等）…');
+  try{ await withTimeout(loadPose(), 120000); }
+  catch(e){ stopCamera(); showStatus(''); showMenuErr('动作识别模型没有加载成功，请检查网络后重试。'); return; }
+  showStatus(''); applyPoseOptions();
+  const g = $('#game'); g.classList.remove('hidden'); g.classList.add('testing');
+  video.classList.remove('hidden'); $('#testBar').classList.remove('hidden');
+  $('#menu').classList.add('hidden'); $('#result').classList.add('hidden'); $('#count').classList.add('hidden');
+  resize(); phase = 'test'; clf.reset(); gotResult = false; lm = null; poseStartT = performance.now();
+  poseLoop(++poseRun);
+  if(!raf) raf = requestAnimationFrame(frame);
+}
+
 function play(){
   const ctx = ensureCtx();
   src = ctx.createBufferSource(); src.buffer = song.buf; src.connect(ctx.destination);
@@ -878,6 +925,7 @@ function leaveGame(){
   if(raf){ cancelAnimationFrame(raf); raf = 0; }
   if(wakeLock){ try{ wakeLock.release(); }catch(e){} wakeLock = null; }
   $('#pauseMenu').classList.add('hidden'); $('#count').classList.add('hidden');
+  $('#testBar').classList.add('hidden'); $('#game').classList.remove('testing');
   $('#game').classList.add('hidden');
 }
 function quitToMenu(){ leaveGame(); $('#result').classList.add('hidden'); $('#menu').classList.remove('hidden'); }
@@ -1043,10 +1091,18 @@ function toScreen(p){
 }
 function drawSkeleton(now){
   if(touchMode || !cameraOn || !video.videoWidth || !lm || now - lmT > 500) return;
-  const col = curLabel === 'open' ? '#3dffd0' : (curLabel === 'cross' ? '#ff7bff' : 'rgba(255,255,255,.85)');
-  const vis = p => p && (p.visibility === undefined || p.visibility > 0.3);
-  cx.save(); cx.lineCap = 'round'; cx.strokeStyle = col; cx.fillStyle = col; cx.lineWidth = 4;
-  cx.shadowColor = col; cx.shadowBlur = 10;
+  const col = curLabel === 'open' ? '#3dffd0' : (curLabel === 'cross' ? '#ff7bff' : 'rgba(255,255,255,.9)');
+  const vis = p => p && (p.visibility === undefined || p.visibility > VIS);
+  cx.save(); cx.lineCap = 'round';
+  // 身体其余部分：淡淡地画，方便确认模型认出了人
+  cx.strokeStyle = 'rgba(255,255,255,.35)'; cx.lineWidth = 2;
+  for(const [a, b] of [[11, 12], [11, 23], [12, 24], [11, 13], [13, 15], [12, 14], [14, 16], [0, 11], [0, 12]]){
+    if(!vis(lm[a]) || !vis(lm[b])) continue;
+    const p = toScreen(lm[a]), q = toScreen(lm[b]);
+    cx.beginPath(); cx.moveTo(p.x, p.y); cx.lineTo(q.x, q.y); cx.stroke();
+  }
+  // 腿：亮色加粗
+  cx.strokeStyle = col; cx.fillStyle = col; cx.lineWidth = 4; cx.shadowColor = col; cx.shadowBlur = 10;
   for(const [a, b] of [[23, 25], [25, 27], [24, 26], [26, 28], [23, 24]]){
     if(!vis(lm[a]) || !vis(lm[b])) continue;
     const p = toScreen(lm[a]), q = toScreen(lm[b]);
@@ -1058,11 +1114,13 @@ function drawSkeleton(now){
   }
   cx.restore();
 }
-function drawChip(now){
+function drawChip(now, x0, y){
   let txt, col = 'rgba(255,255,255,.9)';
+  const legsSeen = lm && lm[27] && lm[28] && (lm[27].visibility === undefined || lm[27].visibility > VIS) && (lm[28].visibility === undefined || lm[28].visibility > VIS);
   if(touchMode){ const l = currentLabel(now); txt = l === 'none' ? '按住按钮做动作' : '当前：' + TYPES[l].label; }
-  else if(!gotResult){ txt = now - poseStartT > 9000 ? '动作识别没有响应，请刷新页面重试' : '动作识别启动中…'; }
-  else if(!lm || now - lmT > 500){ txt = '没看到你的腿，请调整手机位置'; col = '#ffb3c8'; }
+  else if(!gotResult){ txt = now - poseStartT > 12000 ? '动作识别没有响应，请刷新页面重试' : '动作识别启动中…'; }
+  else if(!lm || now - lmT > 500){ txt = '没认出人：请让全身（含头）入镜'; col = '#ffb3c8'; }
+  else if(!legsSeen){ txt = '认出人了，但看不到脚踝：让脚入镜'; col = '#ffd98a'; }
   else{
     const l = currentLabel(now);
     txt = l === 'none' ? '识别中…' : '当前动作：' + TYPES[l].label;
@@ -1070,10 +1128,16 @@ function drawChip(now){
   }
   cx.save();
   cx.font = '700 14px "PingFang SC","Microsoft YaHei",sans-serif';
-  const w = cx.measureText(txt).width + 26, h = 30, x = tx - w / 2 < 12 ? 12 : tx - w / 2, y = laneY + ringR * 3.0;
+  const w = cx.measureText(txt).width + 26, h = 30, x = Math.max(12, Math.min(W - w - 12, x0 - w / 2));
   cx.beginPath(); if(cx.roundRect) cx.roundRect(x, y, w, h, 15); else cx.rect(x, y, w, h);
   cx.fillStyle = 'rgba(10,8,25,.72)'; cx.fill();
   cx.fillStyle = col; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText(txt, x + w / 2, y + h / 2 + 1);
+  if(!touchMode && gotResult){
+    const d = '关键点 ' + dbg.n + '/33 · 左踝 ' + dbg.la.toFixed(2) + ' 右踝 ' + dbg.ra.toFixed(2) + (dbg.r == null ? '' : ' · 间距比 ' + dbg.r.toFixed(1));
+    cx.font = '12px system-ui,sans-serif'; cx.fillStyle = 'rgba(255,255,255,.75)';
+    cx.shadowColor = 'rgba(0,0,0,.9)'; cx.shadowBlur = 4;
+    cx.fillText(d, Math.max(cx.measureText(d).width / 2 + 12, Math.min(W - cx.measureText(d).width / 2 - 12, x0)), y + h + 14);
+  }
   cx.restore();
 }
 
@@ -1111,6 +1175,7 @@ function frame(now){
     cx.fillStyle = g; cx.fillRect(0, 0, W, H);
   }
   drawSkeleton(now);
+  if(phase === 'test'){ drawChip(now, W / 2, 64); return; }
   drawLane();
   if(phase === 'play' || phase === 'pause'){
     const t = songTime();
@@ -1122,7 +1187,7 @@ function frame(now){
     drawEffects(now);
     updateHud(t);
   }
-  if(phase === 'count' || phase === 'play' || phase === 'pause') drawChip(now);
+  if(phase === 'count' || phase === 'play' || phase === 'pause') drawChip(now, tx, laneY + ringR * 3.0);
 }
 
 /* 调试/自动化测试用的只读入口 */
