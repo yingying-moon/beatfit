@@ -3,7 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>卡点燃脂 · 跟着节拍动起来</title>
+<meta name="theme-color" content="#0e0a1c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>卡点燃脂 · 开腿交叉</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <style>
 :root{
   --bg:#f5f2ff; --surface:#ffffff; --surface2:#ece7ff; --text:#1b1533; --muted:#645d80; --line:rgba(27,21,51,.13);
@@ -27,8 +33,7 @@ html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
 body{
   height:100%;margin:0;background:var(--bg);color:var(--text);
   font-family:"PingFang SC","HarmonyOS Sans SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
-  -webkit-tap-highlight-color:transparent;overflow:hidden;
-  -webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color:transparent;overflow:hidden;-webkit-font-smoothing:antialiased;
 }
 .hidden{display:none !important}
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
@@ -38,25 +43,26 @@ button:focus-visible,input:focus-visible,label:focus-within{outline:3px solid va
 #menu{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;padding:18px 18px 40px}
 #menu .wrap{max-width:460px;margin:0 auto}
 .brand{display:flex;align-items:center;gap:10px;margin:6px 0 14px}
-.brand svg{flex:none}
 .brand h1{margin:0;font-size:26px;font-weight:800;letter-spacing:.02em}
-.tagline{margin:0 0 16px;color:var(--muted);font-size:15px;line-height:1.5}
+.tagline{margin:0 0 16px;color:var(--muted);font-size:15px;line-height:1.55}
 
 .hero{
-  position:relative;height:172px;border-radius:22px;overflow:hidden;margin-bottom:18px;
+  position:relative;height:196px;border-radius:22px;overflow:hidden;margin-bottom:18px;color:#fff;
   background:
     radial-gradient(120% 90% at 20% 0%, #3a2b8f 0%, transparent 60%),
     radial-gradient(100% 90% at 100% 100%, #7a1f5e 0%, transparent 60%),
     #120c26;
 }
-.demo{position:absolute;width:62px;height:62px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:28px}
-.demo b{font-weight:800;text-shadow:0 0 10px rgba(255,255,255,.7)}
-.demo i{position:absolute;inset:0;border-radius:50%;border:3px solid rgba(255,255,255,.92);animation:shrink 1.8s cubic-bezier(.4,0,.6,1) infinite}
-.d1{left:16%;top:34px;background:radial-gradient(circle at 50% 40%,rgba(120,120,255,.75),rgba(70,60,220,.55));box-shadow:0 0 26px 4px rgba(122,92,255,.75),inset 0 0 0 2px rgba(190,200,255,.9)}
-.d2{right:16%;top:78px;background:radial-gradient(circle at 50% 40%,rgba(255,110,160,.75),rgba(230,50,110,.55));box-shadow:0 0 26px 4px rgba(255,61,127,.7),inset 0 0 0 2px rgba(255,190,215,.9)}
-.d2 i{animation-delay:.9s}
-@keyframes shrink{0%{transform:scale(2.9);opacity:0}18%{opacity:1}82%{transform:scale(1);opacity:1}100%{transform:scale(1);opacity:0}}
-.hero p{position:absolute;left:16px;bottom:12px;margin:0;color:#e8e1ff;font-size:13px;opacity:.9}
+.lane{position:absolute;left:12px;right:12px;top:16px;height:82px;border-radius:44px;overflow:hidden;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14)}
+.tgt{position:absolute;left:34px;top:8px;width:64px;height:64px;border-radius:50%;border:3.5px solid rgba(255,255,255,.95);box-shadow:0 0 18px rgba(255,255,255,.45)}
+.dot{position:absolute;top:9px;left:0;width:62px;height:62px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:21px;animation:slide 3.6s linear infinite;text-shadow:0 0 3px #1a0030,0 0 3px #1a0030,0 0 8px rgba(255,255,255,.6)}
+.dot.o{background:radial-gradient(circle at 50% 35%,#7dffe0,#12a58f);box-shadow:0 0 22px 3px rgba(61,255,208,.7)}
+.dot.x{background:radial-gradient(circle at 50% 35%,#ff9bff,#a833c4);box-shadow:0 0 22px 3px rgba(224,77,255,.7);animation-delay:-1.8s}
+@keyframes slide{0%{transform:translateX(380px);opacity:0}8%{opacity:1}72%{transform:translateX(35px);opacity:1}100%{transform:translateX(-70px);opacity:0}}
+.moves{position:absolute;left:12px;right:12px;bottom:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mv{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:14px;background:rgba(255,255,255,.1);font-size:13px;line-height:1.35}
+.mv b{display:block;font-size:16px}
+.mv svg{flex:none}
 
 .step-title{margin:0 0 10px;font-size:16px;font-weight:700}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -64,30 +70,33 @@ button:focus-visible,input:focus-visible,label:focus-within{outline:3px solid va
   display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 14px;border-radius:16px;
   font-weight:700;font-size:15px;background:var(--surface);border:1.5px solid var(--line);text-align:center;
 }
-.btn svg{flex:none}
 .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent;font-size:17px;min-height:58px;box-shadow:0 8px 24px -8px var(--accent)}
 .btn.ghost{background:transparent}
 .btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
 .btn:active:not(:disabled){transform:scale(.98)}
 .file-btn{position:relative;overflow:hidden}
-.file-btn input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.file-btn input,.mini input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
 
 .card{margin-top:14px;padding:16px;border-radius:20px;background:var(--surface);border:1.5px solid var(--line)}
 .song-title{font-size:18px;font-weight:800;word-break:break-all;line-height:1.35}
-.song-meta{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 14px}
+.song-meta{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 6px}
 .chip{padding:4px 10px;border-radius:99px;background:var(--surface2);font-size:13px;font-weight:600}
-.opt{margin-top:14px}
+.opt{margin-top:16px}
 .opt>label,.opt>.lab{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;font-weight:700;margin-bottom:8px}
 .opt output{color:var(--accent);font-variant-numeric:tabular-nums}
 .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:var(--surface2);padding:4px;border-radius:14px}
+.seg.two{grid-template-columns:repeat(2,1fr)}
 .seg button{min-height:40px;border-radius:11px;font-weight:700;font-size:14px;color:var(--muted)}
 .seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
 input[type=range]{width:100%;height:32px;accent-color:var(--accent);margin:0}
 .hint{margin:6px 0 0;font-size:12.5px;line-height:1.55;color:var(--muted)}
-.actions{display:grid;gap:10px;margin-top:16px}
+.lyric-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.lyric-row .stat{flex:1;font-size:13.5px;line-height:1.5;color:var(--muted)}
+.mini{position:relative;overflow:hidden;min-height:42px;padding:0 14px;border-radius:12px;border:1.5px solid var(--line);font-weight:700;font-size:14px;display:inline-flex;align-items:center;white-space:nowrap;background:var(--surface)}
+.actions{display:grid;gap:10px;margin-top:18px}
 .err{margin-top:14px;padding:12px 14px;border-radius:14px;background:var(--err-bg);color:var(--err-text);font-size:14px;line-height:1.55}
 .status{margin-top:14px;font-size:14px;color:var(--muted);display:flex;align-items:center;gap:8px}
-.spin{width:16px;height:16px;border-radius:50%;border:2.5px solid var(--line);border-top-color:var(--accent);animation:rot .8s linear infinite}
+.spin{width:16px;height:16px;flex:none;border-radius:50%;border:2.5px solid var(--line);border-top-color:var(--accent);animation:rot .8s linear infinite}
 @keyframes rot{to{transform:rotate(360deg)}}
 .tips{margin:22px 2px 0;padding:0;list-style:none;color:var(--muted);font-size:13.5px;line-height:1.7}
 .tips li{padding-left:16px;position:relative}
@@ -95,11 +104,12 @@ input[type=range]{width:100%;height:32px;accent-color:var(--accent);margin:0}
 
 /* ---------- 游戏 ---------- */
 #game{position:fixed;inset:0;background:#0b0816;color:#fff;overflow:hidden;z-index:5;touch-action:none}
-#cam{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);background:#0b0816}
+#cam{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#0b0816}
+#cam.mirror{transform:scaleX(-1)}
 #cv{position:absolute;inset:0}
-#game.touch #cv{pointer-events:auto}
-#shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(8,6,18,.62) 0,rgba(8,6,18,0) 22%,rgba(8,6,18,0) 70%,rgba(8,6,18,.75) 100%)}
-#hud{position:absolute;inset:0;pointer-events:none;padding:calc(env(safe-area-inset-top,0px) + 10px) 14px calc(env(safe-area-inset-bottom,0px) + 14px);display:flex;flex-direction:column;justify-content:space-between}
+#shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(8,6,18,.6) 0,rgba(8,6,18,0) 26%,rgba(8,6,18,0) 52%,rgba(8,6,18,.82) 100%)}
+#hud{position:absolute;inset:0;pointer-events:none;padding:calc(env(safe-area-inset-top,0px) + 10px) 14px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;flex-direction:column}
+#hud .mid{flex:1}
 .top .line{display:flex;align-items:center;gap:10px}
 #songName{flex:1;min-width:0;font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.92}
 .round{pointer-events:auto;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.16);display:grid;place-items:center;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
@@ -107,22 +117,30 @@ input[type=range]{width:100%;height:32px;accent-color:var(--accent);margin:0}
 .bar i{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:5px;background:linear-gradient(90deg,#8f70ff,#ff5d94)}
 .bar i::after{content:"";position:absolute;right:-5px;top:50%;width:11px;height:11px;margin-top:-5.5px;border-radius:50%;background:#fff;box-shadow:0 0 8px #fff}
 #stage{display:inline-block;padding:5px 12px;border-radius:99px;font-size:13px;font-weight:800;color:#fff;background:linear-gradient(90deg,#5b3cff,#b23cff);box-shadow:0 0 16px rgba(120,80,255,.7)}
-.bottom{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
-.score-box .lab{font-size:12px;opacity:.75}
-#score{font-size:44px;line-height:1;font-weight:900;font-variant-numeric:tabular-nums;text-shadow:0 2px 14px rgba(0,0,0,.5)}
-.stats{display:flex;gap:16px;text-align:right}
-.stats div{min-width:44px}
-.stats b{display:block;font-size:20px;font-weight:800;font-variant-numeric:tabular-nums}
-.stats span{font-size:11.5px;opacity:.75}
-#combo{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 120px);text-align:center;font-size:22px;font-weight:900;color:#ffd54a;text-shadow:0 0 14px rgba(255,180,0,.8);opacity:0;transition:opacity .15s}
+#combo{position:absolute;left:0;right:0;top:230px;text-align:center;font-size:22px;font-weight:900;color:#ffd54a;text-shadow:0 0 14px rgba(255,180,0,.8);opacity:0;transition:opacity .15s;pointer-events:none}
 #combo.on{opacity:1}
 #combo.pop{animation:pop .18s ease-out}
 @keyframes pop{0%{transform:scale(1.35)}100%{transform:scale(1)}}
 
+#lyric{text-align:center;padding:0 4px 10px;text-shadow:0 1px 3px rgba(0,0,0,.95),0 0 12px rgba(0,0,0,.75)}
+#lyric .cur{font-size:clamp(19px,5.4vw,26px);font-weight:800;line-height:1.35;min-height:1.35em;color:#fff}
+#lyric .nxt{font-size:clamp(13px,3.6vw,16px);line-height:1.4;min-height:1.4em;opacity:.72;margin-top:2px}
+#tbtns{display:flex;gap:12px;padding-bottom:10px;pointer-events:auto}
+#tbtns button{flex:1;min-height:64px;border-radius:18px;font-size:26px;font-weight:900;color:#fff;border:2px solid rgba(255,255,255,.4);touch-action:none;user-select:none;-webkit-user-select:none}
+#tbOpen{background:linear-gradient(135deg,#12b58f,#0b7f8f)}
+#tbCross{background:linear-gradient(135deg,#b23cff,#ff3d8a)}
+.bottom{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.score-box .lab{font-size:12px;opacity:.75}
+#score{font-size:42px;line-height:1;font-weight:900;font-variant-numeric:tabular-nums;text-shadow:0 2px 14px rgba(0,0,0,.5)}
+.stats{display:flex;gap:16px;text-align:right}
+.stats div{min-width:44px}
+.stats b{display:block;font-size:20px;font-weight:800;font-variant-numeric:tabular-nums}
+.stats span{font-size:11.5px;opacity:.75}
+
 .overlay{position:absolute;inset:0;display:grid;place-items:center;text-align:center;background:rgba(8,6,20,.55);pointer-events:auto}
+#count{background:rgba(8,6,20,.42)}
 #count .n{font-size:132px;font-weight:900;line-height:1;text-shadow:0 0 30px rgba(143,112,255,.9);animation:pop .3s ease-out}
-#count p{margin:14px 24px 0;font-size:16px;line-height:1.6;opacity:.92}
-#count.clear{background:transparent;pointer-events:none}
+#count p{margin:14px 28px 0;font-size:16px;line-height:1.6;opacity:.95}
 .panel{display:grid;gap:10px;width:min(300px,80vw)}
 .panel .btn{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.22);color:#fff}
 .panel .btn.primary{background:var(--accent);border-color:transparent}
@@ -140,7 +158,7 @@ input[type=range]{width:100%;height:32px;accent-color:var(--accent);margin:0}
 .res-detail{font-size:14px;opacity:.85;line-height:1.7}
 .res .actions .btn{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.22);color:#fff}
 .res .actions .btn.primary{background:var(--accent);border-color:transparent}
-@media (prefers-reduced-motion: reduce){.demo i{animation:none;transform:scale(1.5);opacity:1}#count .n,#combo.pop{animation:none}}
+@media (prefers-reduced-motion: reduce){.dot{animation:none;transform:translateX(35px)}#count .n,#combo.pop{animation:none}}
 </style>
 </head>
 <body>
@@ -152,12 +170,20 @@ input[type=range]{width:100%;height:32px;accent-color:var(--accent);margin:0}
       <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="15" fill="none" stroke="var(--accent)" stroke-width="3"/><circle cx="17" cy="17" r="8" fill="var(--pink)"/><circle cx="17" cy="17" r="3" fill="#fff"/></svg>
       <h1>卡点燃脂</h1>
     </div>
-    <p class="tagline">导入喜欢的歌，圆环会跟着鼓点出现。用身体去碰圆环，摄像头实时识别你的动作。</p>
+    <p class="tagline">躺着练腿。把手机立在脚边，用后置摄像头对着你的腿，跟着鼓点做「开」和「交叉」。</p>
 
     <div class="hero" aria-hidden="true">
-      <div class="demo d1"><b>举</b><i></i></div>
-      <div class="demo d2"><b>踢</b><i></i></div>
-      <p>外圈缩到内圈的瞬间，就是要动的那一拍</p>
+      <div class="lane"><div class="tgt"></div><div class="dot x">交叉</div><div class="dot o">开</div></div>
+      <div class="moves">
+        <div class="mv">
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="#7dffe0" stroke-width="3.2" stroke-linecap="round"><path d="M17 4 L6 30 M17 4 L28 30"/></svg>
+          <div><b>开</b>双腿向两侧分开</div>
+        </div>
+        <div class="mv">
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="#ff9bff" stroke-width="3.2" stroke-linecap="round"><path d="M9 4 L25 30 M25 4 L9 30"/></svg>
+          <div><b>交叉</b>双腿在中间交叉</div>
+        </div>
+      </div>
     </div>
 
     <h2 class="step-title">先选一首歌</h2>
@@ -177,7 +203,24 @@ input[type=range]{width:100%;height:32px;accent-color:var(--accent);margin:0}
       <div class="song-meta"><span class="chip" id="sBpm"></span><span class="chip" id="sDur"></span><span class="chip" id="sCnt"></span></div>
 
       <div class="opt">
-        <div class="lab">出圈密度</div>
+        <div class="lab">歌词（显示在屏幕下方）</div>
+        <div class="lyric-row">
+          <div class="stat" id="lrcStatus">还没有歌词</div>
+          <label class="mini">导入 .lrc 歌词<input type="file" id="lrcIn" accept=".lrc,.txt,text/plain"></label>
+        </div>
+        <p class="hint">如果 mp3 里自带带时间的歌词，会自动读取。没有的话，导入同名的 .lrc 文件即可。</p>
+      </div>
+
+      <div class="opt">
+        <div class="lab">摄像头</div>
+        <div class="seg two" id="segCam">
+          <button type="button" data-facing="environment" aria-pressed="true">后置</button>
+          <button type="button" data-facing="user" aria-pressed="false">前置</button>
+        </div>
+      </div>
+
+      <div class="opt">
+        <div class="lab">动作间隔</div>
         <div class="seg" id="segStep">
           <button type="button" data-step="1" aria-pressed="false">每拍</button>
           <button type="button" data-step="2" aria-pressed="true">每 2 拍</button>
@@ -186,14 +229,14 @@ input[type=range]{width:100%;height:32px;accent-color:var(--accent);margin:0}
         <p class="hint" id="stepHint"></p>
       </div>
       <div class="opt">
-        <label for="rSens">动作灵敏度 <output id="oSens">6</output></label>
-        <input type="range" id="rSens" min="1" max="10" value="6">
-        <p class="hint">数字越大越容易判定命中。房间光线暗、画面有噪点时调小。</p>
+        <label for="rSens">识别灵敏度 <output id="oSens">5</output></label>
+        <input type="range" id="rSens" min="1" max="10" value="5">
+        <p class="hint">数字越大，越容易认成「开」或「交叉」。经常判不出来就调大，乱判就调小。</p>
       </div>
       <div class="opt">
         <label for="rOff">节拍延迟微调 <output id="oOff">0 ms</output></label>
-        <input type="range" id="rOff" min="-200" max="200" step="10" value="0">
-        <p class="hint">感觉圆环总是比鼓点早，就往 + 调；比鼓点晚就往 − 调。用蓝牙耳机通常要 + 100 到 250。</p>
+        <input type="range" id="rOff" min="-300" max="300" step="10" value="0">
+        <p class="hint">感觉圆环总比鼓点晚到，就往 − 调；早到就往 + 调。</p>
       </div>
 
       <div class="actions">
@@ -203,9 +246,9 @@ input[type=range]{width:100%;height:32px;accent-color:var(--accent);margin:0}
     </section>
 
     <ul class="tips">
-      <li>把手机靠在稳定的地方，后退约 2 米，让全身入镜。</li>
-      <li>光线充足、背景简单，识别会更准。</li>
-      <li>视频只在你的手机里处理，不会上传。</li>
+      <li>手机立在床尾或地上，后置摄像头对着你，让髋部到脚踝都入镜。</li>
+      <li>光线充足，穿和床单不同颜色的裤子，识别会更稳。</li>
+      <li>画面只在你的手机里处理，不会上传。</li>
     </ul>
   </div>
 </main>
@@ -227,6 +270,12 @@ input[type=range]{width:100%;height:32px;accent-color:var(--accent);margin:0}
       <span id="stage">热身环节</span>
     </div>
     <div id="combo"></div>
+    <div class="mid"></div>
+    <div id="lyric" class="hidden"><div class="cur" id="lyCur"></div><div class="nxt" id="lyNxt"></div></div>
+    <div id="tbtns" class="hidden">
+      <button id="tbOpen" type="button">开</button>
+      <button id="tbCross" type="button">交叉</button>
+    </div>
     <div class="bottom">
       <div class="score-box"><div class="lab">得分</div><div id="score">0</div></div>
       <div class="stats">
@@ -235,7 +284,7 @@ input[type=range]{width:100%;height:32px;accent-color:var(--accent);margin:0}
       </div>
     </div>
   </div>
-  <div id="count" class="overlay hidden"><div><div class="n" id="countN">3</div><p id="countTxt">请后退，让全身入镜</p></div></div>
+  <div id="count" class="overlay hidden"><div><div class="n" id="countN">3</div><p id="countTxt"></p></div></div>
   <div id="pauseMenu" class="overlay hidden">
     <div class="panel">
       <h2>已暂停</h2>
@@ -275,28 +324,24 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const TAU = Math.PI * 2;
 
 /* ====== 参数 ====== */
-const APPROACH = 1.4;      // 外圈从出现到收拢用时（秒）
-const HIT_WIN = 0.22;      // 判定窗口 ±秒
-const PERFECT_WIN = 0.10;  // Perfect 窗口
-const CELL_THR = 24;       // 像素亮度变化阈值
-const ROWS = [0.27, 0.43, 0.60];
-const LABELS = ['举', '拍', '踢'];
-const COLORS = [
-  { fill0:'rgba(130,130,255,.85)', fill1:'rgba(70,60,225,.6)',  glow:'#7a5cff', rim:'#c3ccff' },
-  { fill0:'rgba(255,120,168,.85)', fill1:'rgba(230,50,110,.6)', glow:'#ff3d7f', rim:'#ffc2d8' }
-];
+const APPROACH = 2.6;      // 圆环从屏幕右边滑到判定圈用时（秒）
+const HIT_WIN = 0.28;      // 判定窗口 ±秒
+const PERFECT_WIN = 0.14;  // Perfect 窗口
+const POSE_LAT = 0.06;     // 动作识别本身的延迟补偿（秒）
+const TYPES = {
+  open:  { label: '开',   fill0: 'rgba(125,255,224,.96)', fill1: 'rgba(18,165,143,.82)', glow: '#3dffd0', rim: '#c8fff2' },
+  cross: { label: '交叉', fill0: 'rgba(255,155,255,.96)', fill1: 'rgba(168,51,196,.85)', glow: '#e04dff', rim: '#ffd0ff' }
+};
 
 /* ====== 状态 ====== */
-let actx = null, song = null, rings = [];
-const opt = { step: 2, sens: 6, offset: 0 };
+let actx = null, song = null, rings = [], lyrics = null;
+const opt = { step: 2, sens: 5, offset: 0, facing: 'environment' };
 let phase = 'menu';            // menu | count | play | pause | end
 let touchMode = false, cameraOn = false, stream = null, wakeLock = null;
-let src = null, t0 = 0, raf = 0, runId = 0;
-let stats;
+let src = null, t0 = 0, raf = 0, runId = 0, stats;
 
-/* ====== DOM ====== */
-const video = $('#cam'), cv = $('#cv'), ctx = cv.getContext('2d');
-let W = 0, H = 0, dpr = 1, ringR = 40;
+const video = $('#cam'), cv = $('#cv'), cx = cv.getContext('2d');
+let W = 0, H = 0, dpr = 1, ringR = 28, laneY = 140, tx = 90, speed = 120;
 
 /* =================================================================
    音频：解码 / 示范曲 / 节拍分析
@@ -317,23 +362,19 @@ async function makeDemo(){
   const env = (g, t, a, d) => { g.gain.setValueAtTime(a, t); g.gain.exponentialRampToValueAtTime(0.001, t + d); };
   for(let b = 0; b < beats; b++){
     const t = 0.5 + b * spb;
-    // 底鼓
     let o = oc.createOscillator(), g = oc.createGain();
     o.frequency.setValueAtTime(170, t); o.frequency.exponentialRampToValueAtTime(45, t + 0.12);
     env(g, t, 0.95, 0.34); o.connect(g).connect(oc.destination); o.start(t); o.stop(t + 0.4);
-    // 反拍踩镲
     let n = oc.createBufferSource(); n.buffer = nb;
     let hp = oc.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 7000;
     g = oc.createGain(); env(g, t + spb / 2, 0.22, 0.05);
     n.connect(hp).connect(g).connect(oc.destination); n.start(t + spb / 2, 0, 0.08);
-    // 2、4 拍拍手
     if(b % 4 === 1 || b % 4 === 3){
       n = oc.createBufferSource(); n.buffer = nb;
       const bp = oc.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1800; bp.Q.value = 0.8;
       g = oc.createGain(); env(g, t, 0.5, 0.18);
       n.connect(bp).connect(g).connect(oc.destination); n.start(t, 0, 0.22);
     }
-    // 低音
     o = oc.createOscillator(); o.type = 'triangle';
     o.frequency.value = bassNotes[Math.floor(b / 4) % 4] * (b % 2 ? 2 : 1);
     g = oc.createGain(); env(g, t + spb / 2 * (b % 2), 0.22, spb * 0.8);
@@ -362,7 +403,6 @@ function analyzeBeats(buf){
     ch[f] = Math.log1p(Math.sqrt(sh / hop) * 40);
     amp[f] = Math.sqrt(sf / hop);
   }
-  // 起音强度：低频(鼓) + 高频(镲/拍手)
   const o = new Float32Array(nF);
   for(let f = 4; f < nF; f++){
     let ml = 0, mh = 0;
@@ -377,7 +417,6 @@ function analyzeBeats(buf){
   const om = new Float32Array(nF);
   for(let f = 0; f < nF; f++) om[f] = Math.max(o[Math.max(0, f - 1)], o[f], o[Math.min(nF - 1, f + 1)]);
 
-  // 估计速度与相位：在网格上求起音强度之和，并惩罚半拍位置
   const nT = Math.min(nF - 2, Math.floor(fps * 180));
   let best = { s: -1e9, bpm: 120, ph: 0 };
   for(let bpm = 70; bpm <= 180; bpm += 0.25){
@@ -394,7 +433,6 @@ function analyzeBeats(buf){
       if(sc > best.s) best = { s: sc, bpm, ph };
     }
   }
-  // 相位微调：对齐到附近真实的起音峰
   const P = fps * 60 / best.bpm;
   let sumOff = 0, n = 0;
   for(let t = best.ph; t < nT; t += P){
@@ -407,10 +445,10 @@ function analyzeBeats(buf){
   const times = [], str = [];
   for(let t = ph; t < nF - fps * 0.3; t += P){
     const i = Math.round(t), time = t / fps;
-    if(i < 0 || time < 2.0) continue;
+    if(i < 0 || time < 3.0) continue;              // 前 3 秒留给圆环滑入
     let la = 0, lc = 0;
     for(let d = -3; d <= 3; d++){ const j = i + d; if(j >= 0 && j < nF){ la += amp[j]; lc++; } }
-    if(la / lc < 0.12 * meanAmp) continue;   // 静音段不出圈
+    if(la / lc < 0.12 * meanAmp) continue;
     times.push(time); str.push(om[Math.min(nF - 1, i)]);
   }
   return { bpm: best.bpm, times, str, duration: buf.duration };
@@ -427,6 +465,213 @@ function pickBeats(step){
   const out = [];
   for(let k = bj; k < times.length; k += step) out.push(times[k]);
   return out;
+}
+
+/* =================================================================
+   歌词：LRC 解析 / mp3 内嵌歌词读取
+   ================================================================= */
+// <lyrics>
+function parseLRC(text){
+  const out = []; let off = 0;
+  const mo = text.match(/\[offset:\s*([+-]?\d+)\s*\]/i);
+  if(mo) off = +mo[1] / 1000;
+  for(const raw of text.split(/\r?\n/)){
+    const re = /\[(\d{1,3}):(\d{1,2}(?:[.:]\d{1,3})?)\]/g;
+    let m, last = 0; const times = [];
+    while((m = re.exec(raw))){ times.push(+m[1] * 60 + (+m[2].replace(':', '.'))); last = re.lastIndex; }
+    if(!times.length) continue;
+    const txt = raw.slice(last).replace(/<\d+:\d+(?:[.:]\d+)?>/g, '').trim();
+    for(const t of times) out.push({ t: Math.max(0, t - off), text: txt });
+  }
+  out.sort((a, b) => a.t - b.t);
+  return out;
+}
+function decodeText(bytes){
+  try{ return new TextDecoder('utf-8', { fatal: true }).decode(bytes).replace(/^\uFEFF/, ''); }catch(e){}
+  try{ return new TextDecoder('gbk').decode(bytes); }catch(e){}
+  return new TextDecoder('latin1').decode(bytes);
+}
+function id3Text(bytes, enc){
+  if(enc === 1 || enc === 2){
+    let be = enc === 2, s = 0;
+    if(bytes.length >= 2){
+      if(bytes[0] === 0xFF && bytes[1] === 0xFE){ be = false; s = 2; }
+      else if(bytes[0] === 0xFE && bytes[1] === 0xFF){ be = true; s = 2; }
+    }
+    try{ return new TextDecoder(be ? 'utf-16be' : 'utf-16le').decode(bytes.subarray(s)); }catch(e){ return ''; }
+  }
+  if(enc === 3){ try{ return new TextDecoder('utf-8').decode(bytes); }catch(e){ return ''; } }
+  return decodeText(bytes);
+}
+function findTerm(b, from, enc){
+  if(enc === 1 || enc === 2){ for(let i = from; i + 1 < b.length; i += 2) if(b[i] === 0 && b[i + 1] === 0) return i; return -1; }
+  for(let i = from; i < b.length; i++) if(b[i] === 0) return i;
+  return -1;
+}
+const termLen = enc => (enc === 1 || enc === 2) ? 2 : 1;
+function parseUSLT(b){
+  const enc = b[0]; let p = 4;
+  const d = findTerm(b, p, enc); if(d < 0) return '';
+  p = d + termLen(enc);
+  return id3Text(b.subarray(p), enc);
+}
+function parseSYLT(b){
+  const enc = b[0], fmt = b[4]; let p = 6;
+  const d = findTerm(b, p, enc); if(d < 0 || fmt !== 2) return null;
+  p = d + termLen(enc);
+  const out = [];
+  while(p < b.length){
+    const e = findTerm(b, p, enc); if(e < 0) break;
+    const text = id3Text(b.subarray(p, e), enc).replace(/^\n/, '');
+    p = e + termLen(enc); if(p + 4 > b.length) break;
+    const ms = ((b[p] << 24) | (b[p + 1] << 16) | (b[p + 2] << 8) | b[p + 3]) >>> 0; p += 4;
+    out.push({ t: ms / 1000, text: text.trim() });
+  }
+  return out;
+}
+function readID3Lyrics(ab){
+  const u = new Uint8Array(ab);
+  if(u.length < 20 || u[0] !== 0x49 || u[1] !== 0x44 || u[2] !== 0x33) return null;
+  const ver = u[3]; if(ver < 3) return null;
+  const ss = i => ((u[i] & 0x7f) << 21) | ((u[i + 1] & 0x7f) << 14) | ((u[i + 2] & 0x7f) << 7) | (u[i + 3] & 0x7f);
+  const be = i => ((u[i] << 24) | (u[i + 1] << 16) | (u[i + 2] << 8) | u[i + 3]) >>> 0;
+  const size = ss(6); let p = 10; const end = Math.min(10 + size, u.length);
+  if(u[5] & 0x40) p += ver === 4 ? ss(10) : be(10) + 4;
+  let uslt = '', sylt = null;
+  while(p + 10 <= end){
+    const id = String.fromCharCode(u[p], u[p + 1], u[p + 2], u[p + 3]);
+    if(!/^[A-Z0-9]{4}$/.test(id)) break;
+    const fs = ver === 4 ? ss(p + 4) : be(p + 4);
+    if(fs <= 0 || p + 10 + fs > u.length) break;
+    const body = u.subarray(p + 10, p + 10 + fs); p += 10 + fs;
+    try{
+      if(id === 'USLT' && !uslt) uslt = parseUSLT(body);
+      else if(id === 'SYLT' && !sylt) sylt = parseSYLT(body);
+    }catch(e){}
+  }
+  if(sylt && sylt.length) return { lines: sylt.sort((a, b) => a.t - b.t) };
+  if(uslt){ const l = parseLRC(uslt); return l.length ? { lines: l } : { plain: true }; }
+  return null;
+}
+// </lyrics>
+
+function setLyrics(list, source){
+  lyrics = list && list.length ? list : null;
+  const n = lyrics ? lyrics.filter(l => l.text).length : 0;
+  $('#lrcStatus').textContent = lyrics ? '已载入 ' + n + ' 行歌词' + (source ? '（' + source + '）' : '') : '还没有歌词';
+}
+
+/* =================================================================
+   动作识别：MediaPipe Pose + 开 / 交叉 判定
+   ================================================================= */
+// <classifier>
+function makeClassifier(){
+  const hist = [], recent = [];
+  return {
+    push(r, now, sens){
+      recent.push(r); if(recent.length > 3) recent.shift();
+      const m = [...recent].sort((a, b) => a - b)[Math.floor(recent.length / 2)];
+      hist.push({ t: now, r: m });
+      while(hist.length && now - hist[0].t > 6000) hist.shift();
+      const vals = hist.map(h => h.r).sort((a, b) => a - b);
+      const p10 = vals[Math.floor(vals.length * 0.1)];
+      const p90 = vals[Math.min(vals.length - 1, Math.floor(vals.length * 0.9))];
+      const range = p90 - p10;
+      if(vals.length < 8 || range < 0.9) return m > 2.2 ? 'open' : (m < 1.3 ? 'cross' : 'none');
+      const mid = (p10 + p90) / 2, band = (0.22 - 0.02 * sens) * range;
+      return m > mid + band ? 'open' : (m < mid - band ? 'cross' : 'none');
+    },
+    reset(){ hist.length = 0; recent.length = 0; }
+  };
+}
+// </classifier>
+const clf = makeClassifier();
+
+let pose = null, poseReady = false, poseRun = 0, gotResult = false, poseStartT = 0;
+let lm = null, lmT = 0, curLabel = 'none', curLabelT = 0;
+let touchLabel = 'none', touchUntil = 0;
+
+function loadScript(srcUrl){
+  return new Promise((res, rej) => {
+    const s = document.createElement('script'); s.src = srcUrl; s.onload = res;
+    s.onerror = () => rej(new Error('script load failed')); document.head.appendChild(s);
+  });
+}
+const withTimeout = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))]);
+async function loadPose(){
+  if(poseReady) return;
+  if(!window.Pose) await loadScript('pose/pose.js');
+  pose = new window.Pose({ locateFile: f => 'pose/' + f });
+  pose.setOptions({ modelComplexity: 0, smoothLandmarks: true, enableSegmentation: false, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
+  pose.onResults(onPoseResults);
+  await pose.initialize();
+  poseReady = true;
+}
+
+function legRatio(l){
+  const vw = video.videoWidth || 1, vh = video.videoHeight || 1;
+  const ok = p => p && (p.visibility === undefined || p.visibility > 0.3);
+  const dist = (a, b) => Math.hypot((a.x - b.x) * vw, (a.y - b.y) * vh);
+  const lh = l[23], rh = l[24], la = l[27], ra = l[28];
+  if(!ok(la) || !ok(ra)) return null;
+  let scale = ok(lh) && ok(rh) ? dist(lh, rh) : 0;
+  const legs = [];
+  if(ok(lh)) legs.push(dist(lh, la));
+  if(ok(rh)) legs.push(dist(rh, ra));
+  if(legs.length) scale = Math.max(scale, 0.3 * legs.reduce((s, v) => s + v, 0) / legs.length);
+  if(scale < 1e-3) return null;
+  return dist(la, ra) / scale;
+}
+function onPoseResults(res){
+  gotResult = true; lm = res.poseLandmarks || null; lmT = performance.now();
+  if(!lm){ curLabel = 'none'; curLabelT = lmT; return; }
+  const r = legRatio(lm);
+  curLabel = r == null ? 'none' : clf.push(r, lmT, opt.sens);
+  curLabelT = lmT;
+}
+function currentLabel(now){
+  if(touchMode) return now < touchUntil ? touchLabel : 'none';
+  return now - curLabelT < 500 ? curLabel : 'none';
+}
+async function poseLoop(my){
+  let errs = 0;
+  while(my === poseRun && cameraOn){
+    if(video.readyState >= 2 && video.videoWidth){
+      try{ await pose.send({ image: video }); }
+      catch(e){ if(++errs > 5) return; await sleep(200); }
+    }
+    await new Promise(r => requestAnimationFrame(r));
+  }
+}
+
+async function startCamera(){
+  if(!window.isSecureContext) throw { name: 'Insecure' };
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw { name: 'NoMedia' };
+  stream = await navigator.mediaDevices.getUserMedia({
+    video: { facingMode: { ideal: opt.facing }, width: { ideal: 540 }, height: { ideal: 960 } }, audio: false
+  });
+  video.classList.toggle('mirror', opt.facing === 'user');
+  video.srcObject = stream;
+  await video.play();
+  cameraOn = true;
+}
+function stopCamera(){
+  poseRun++;
+  if(stream){ stream.getTracks().forEach(t => t.stop()); stream = null; }
+  video.srcObject = null; cameraOn = false; lm = null;
+}
+function camErrMsg(e){
+  switch(e && e.name){
+    case 'NotAllowedError': case 'PermissionDeniedError': case 'SecurityError':
+      return '没有拿到摄像头权限。请在浏览器地址栏左侧的设置里允许使用摄像头，然后重试。也可以先点“用手指试玩”。';
+    case 'NotFoundError': case 'DevicesNotFoundError': case 'OverconstrainedError':
+      return '没有找到可用的摄像头。可以先点“用手指试玩”体验玩法。';
+    case 'NotReadableError': case 'TrackStartError':
+      return '摄像头正被其他应用占用。关掉视频通话或相机后重试。';
+    case 'Insecure': case 'NoMedia':
+      return '当前页面无法调用摄像头（需要 https 网址，不能直接打开本地文件）。';
+    default: return '摄像头启动失败，请刷新页面重试，或先用手指试玩。';
+  }
 }
 
 /* =================================================================
@@ -448,20 +693,20 @@ async function setSong(name, buf){
   showMenuErr('');
   song = { name, buf, info };
   const beatLen = 60 / info.bpm;
-  opt.step = beatLen >= 0.7 ? 1 : (beatLen * 2 >= 0.7 ? 2 : 4);
+  opt.step = beatLen >= 0.8 ? 1 : (beatLen * 2 >= 0.8 ? 2 : 4);
   $('#songCard').classList.remove('hidden');
   renderSongCard();
   $('#songCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
-
 function renderSongCard(){
   $('#sName').textContent = song.name;
   $('#sBpm').textContent = '约 ' + Math.round(song.info.bpm) + ' BPM';
   $('#sDur').textContent = fmtDur(song.info.duration);
-  $('#sCnt').textContent = '共 ' + pickBeats(opt.step).length + ' 个圆环';
+  $('#sCnt').textContent = '共 ' + pickBeats(opt.step).length + ' 个动作';
   document.querySelectorAll('#segStep button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.step === opt.step)));
+  document.querySelectorAll('#segCam button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.facing === opt.facing)));
   const gap = (60 / song.info.bpm * opt.step).toFixed(2);
-  $('#stepHint').textContent = '平均每 ' + gap + ' 秒一个圆环' + (gap < 0.6 ? '，节奏很快，适合热身或手臂动作。' : '。');
+  $('#stepHint').textContent = '平均每 ' + gap + ' 秒一个动作' + (gap < 0.7 ? '，节奏很快，腿会比较累。' : '。');
 }
 
 async function loadFile(file){
@@ -469,10 +714,14 @@ async function loadFile(file){
   try{
     const ctx = ensureCtx();
     const ab = await file.arrayBuffer();
+    let tag = null;
+    try{ tag = readID3Lyrics(ab); }catch(e){}       // 必须在解码前读取（解码会占用这块内存）
     const buf = await new Promise((res, rej) => {
       const p = ctx.decodeAudioData(ab, res, rej);
       if(p && p.catch) p.catch(rej);
     });
+    if(tag && tag.lines) setLyrics(tag.lines, '来自歌曲文件');
+    else{ setLyrics(null); if(tag && tag.plain) $('#lrcStatus').textContent = '歌曲里的歌词没有时间轴，请导入 .lrc 文件'; }
     await setSong(file.name.replace(/\.[^.]+$/, ''), buf);
   }catch(e){
     showStatus('');
@@ -483,119 +732,42 @@ async function loadFile(file){
 $('#fileIn').addEventListener('change', e => { const f = e.target.files[0]; if(f) loadFile(f); e.target.value = ''; });
 $('#demoBtn').addEventListener('click', async () => {
   showMenuErr(''); showStatus('正在生成示范节拍…');
-  try{ ensureCtx(); const buf = await makeDemo(); await setSong('示范节拍 · 112 BPM', buf); }
+  try{ ensureCtx(); const buf = await makeDemo(); setLyrics(null); await setSong('示范节拍 · 112 BPM', buf); }
   catch(e){ showStatus(''); showMenuErr('示范节拍生成失败，请直接导入一首本地歌曲。'); }
 });
+$('#lrcIn').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if(!f) return;
+  try{
+    const list = parseLRC(decodeText(new Uint8Array(await f.arrayBuffer())));
+    if(!list.length){ setLyrics(null); $('#lrcStatus').textContent = '没读到带时间的歌词，请选 .lrc 格式的文件'; return; }
+    setLyrics(list, f.name);
+  }catch(err){ $('#lrcStatus').textContent = '歌词文件读取失败，换一个试试'; }
+});
 document.querySelectorAll('#segStep button').forEach(b => b.addEventListener('click', () => { opt.step = +b.dataset.step; renderSongCard(); }));
+document.querySelectorAll('#segCam button').forEach(b => b.addEventListener('click', () => { opt.facing = b.dataset.facing; renderSongCard(); }));
 $('#rSens').addEventListener('input', e => { opt.sens = +e.target.value; $('#oSens').textContent = opt.sens; });
 $('#rOff').addEventListener('input', e => { opt.offset = +e.target.value; $('#oOff').textContent = (opt.offset > 0 ? '+' : '') + opt.offset + ' ms'; });
 $('#startBtn').addEventListener('click', () => beginGame('cam'));
 $('#touchBtn').addEventListener('click', () => beginGame('touch'));
 
 /* =================================================================
-   摄像头 & 动作(运动)检测
-   ================================================================= */
-async function startCamera(){
-  if(!window.isSecureContext) throw { name: 'Insecure' };
-  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw { name: 'NoMedia' };
-  stream = await navigator.mediaDevices.getUserMedia({
-    video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 1136 } }, audio: false
-  });
-  video.srcObject = stream;
-  await video.play();
-  cameraOn = true;
-}
-function stopCamera(){
-  if(stream){ stream.getTracks().forEach(t => t.stop()); stream = null; }
-  video.srcObject = null; cameraOn = false;
-}
-function camErrMsg(e){
-  switch(e && e.name){
-    case 'NotAllowedError': case 'PermissionDeniedError': case 'SecurityError':
-      return '没有拿到摄像头权限。请在浏览器地址栏或系统设置里允许使用摄像头后重试；如果是在应用内嵌的页面里打开，请改用手机浏览器直接打开。也可以先点“用手指试玩”。';
-    case 'NotFoundError': case 'DevicesNotFoundError': case 'OverconstrainedError':
-      return '没有找到可用的摄像头。可以先点“用手指试玩”体验玩法。';
-    case 'NotReadableError': case 'TrackStartError':
-      return '摄像头正被其他应用占用。关掉视频通话或相机后重试。';
-    case 'Insecure': case 'NoMedia':
-      return '当前页面无法调用摄像头（需要 HTTPS 或 localhost 地址）。可以先点“用手指试玩”。';
-    default: return '摄像头启动失败，请刷新页面重试，或先用手指试玩。';
-  }
-}
-
-// 运动检测网格
-let gw = 72, gh = 128, gsize = 0, mcv, mx, ovc, ovx, ovImg, bufP1, bufP2, bufCur, mask, have = 0, lastS = 0;
-let pointer = null;
-function setupGrid(){
-  gw = 72; gh = Math.max(16, Math.round(gw * H / W));
-  gsize = gw * gh;
-  mcv = document.createElement('canvas'); mcv.width = gw; mcv.height = gh;
-  mx = mcv.getContext('2d', { willReadFrequently: true });
-  ovc = document.createElement('canvas'); ovc.width = gw; ovc.height = gh;
-  ovx = ovc.getContext('2d'); ovImg = ovx.createImageData(gw, gh);
-  bufP1 = new Uint8Array(gsize); bufP2 = new Uint8Array(gsize); bufCur = new Uint8Array(gsize);
-  mask = new Uint8Array(gsize); have = 0;
-}
-
-function sampleMotion(now){
-  if(now - lastS < 32) return; lastS = now;
-  mask.fill(0);
-  if(!touchMode && cameraOn && video.readyState >= 2 && video.videoWidth){
-    const vw = video.videoWidth, vh = video.videoHeight;
-    const sc = Math.max(W / vw, H / vh), sw = W / sc, sh = H / sc, sx = (vw - sw) / 2, sy = (vh - sh) / 2;
-    mx.setTransform(-1, 0, 0, 1, gw, 0);
-    mx.drawImage(video, sx, sy, sw, sh, 0, 0, gw, gh);
-    mx.setTransform(1, 0, 0, 1, 0, 0);
-    const d = mx.getImageData(0, 0, gw, gh).data;
-    for(let i = 0, j = 0; i < gsize; i++, j += 4) bufCur[i] = (d[j] * 77 + d[j + 1] * 150 + d[j + 2] * 29) >> 8;
-    if(have >= 2){
-      let cnt = 0;
-      for(let i = 0; i < gsize; i++){
-        const a = Math.abs(bufCur[i] - bufP1[i]), b = Math.abs(bufCur[i] - bufP2[i]);
-        if((a > b ? a : b) > CELL_THR){ mask[i] = 1; cnt++; }
-      }
-      if(cnt > gsize * 0.55) mask.fill(0);   // 整屏变化：多半是自动曝光，忽略
-    }
-    const tmp = bufP2; bufP2 = bufP1; bufP1 = bufCur; bufCur = tmp; have++;
-  }else if(touchMode && pointer && now - pointer.t < 140){
-    const cx = pointer.x / W * gw, cy = pointer.y / H * gh, r = 5.5;
-    for(let y = Math.max(0, Math.floor(cy - r)); y <= Math.min(gh - 1, Math.ceil(cy + r)); y++)
-      for(let x = Math.max(0, Math.floor(cx - r)); x <= Math.min(gw - 1, Math.ceil(cx + r)); x++)
-        if((x - cx) * (x - cx) + (y - cy) * (y - cy) <= r * r) mask[y * gw + x] = 1;
-  }
-  const dd = ovImg.data;
-  for(let i = 0; i < gsize; i++){
-    const j = i * 4;
-    if(mask[i]){ dd[j] = 90; dd[j + 1] = 225; dd[j + 2] = 255; dd[j + 3] = 150; } else dd[j + 3] = 0;
-  }
-  ovx.putImageData(ovImg, 0, 0);
-}
-
-function ringMotion(fx, fy){
-  const cx = fx * gw, cy = fy * gh, rr = ringR / W * gw * 1.1;
-  let hit = 0, tot = 0;
-  for(let y = Math.max(0, Math.floor(cy - rr)); y <= Math.min(gh - 1, Math.ceil(cy + rr)); y++)
-    for(let x = Math.max(0, Math.floor(cx - rr)); x <= Math.min(gw - 1, Math.ceil(cx + rr)); x++){
-      const dx = x - cx, dy = y - cy;   // 网格单元近似正方形
-      if(dx * dx + dy * dy <= rr * rr){ tot++; hit += mask[y * gw + x]; }
-    }
-  return tot ? hit / tot : 0;
-}
-
-cv.addEventListener('pointerdown', e => { if(touchMode){ const r = cv.getBoundingClientRect(); pointer = { x: e.clientX - r.left, y: e.clientY - r.top, t: performance.now() }; } });
-cv.addEventListener('pointermove', e => { if(touchMode){ const r = cv.getBoundingClientRect(); pointer = { x: e.clientX - r.left, y: e.clientY - r.top, t: performance.now() }; } });
-
-/* =================================================================
    游戏流程
    ================================================================= */
+function layout(){
+  ringR = clamp(W * 0.075, 24, 34);
+  const sb = $('#stage').getBoundingClientRect();
+  laneY = sb.bottom + 18 + ringR + 10;
+  tx = clamp(W * 0.24, ringR * 2, W * 0.4);
+  speed = (W - tx + ringR * 2) / APPROACH;
+  $('#combo').style.top = (laneY + ringR * 5.2) + 'px';
+}
 function resize(){
   const g = $('#game'); W = g.clientWidth; H = g.clientHeight; if(!W || !H) return;
   dpr = Math.min(2, window.devicePixelRatio || 1);
   cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
   cv.style.width = W + 'px'; cv.style.height = H + 'px';
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  ringR = clamp(Math.min(W, H * 0.55) * 0.115, 30, 66);
-  setupGrid();
+  cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  layout();
 }
 window.addEventListener('resize', () => { if(phase !== 'menu' && phase !== 'end') resize(); });
 
@@ -604,46 +776,53 @@ function mulberry32(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t
 function buildRings(){
   const beats = pickBeats(opt.step);
   const rnd = mulberry32(Math.floor(song.info.duration * 1000) + opt.step);
-  rings = []; let side = rnd() < 0.5 ? 0 : 1, row = 1;
+  rings = []; let cur = rnd() < 0.5 ? 'open' : 'cross', run = 1;
   for(const b of beats){
-    if(rnd() < 0.7) side = 1 - side;
-    let nr; do{ nr = Math.floor(rnd() * 3); }while(nr === row && rnd() < 0.75); row = nr;
-    rings.push({
-      b, eb: b + opt.offset / 1000, side, row, label: LABELS[row], state: 0, grade: '',
-      fx: (side === 0 ? 0.24 : 0.76) + (rnd() - 0.5) * 0.10,
-      fy: ROWS[row] + (rnd() - 0.5) * 0.05
-    });
+    if(run >= 3 || rnd() < 0.6){ cur = cur === 'open' ? 'cross' : 'open'; run = 1; } else run++;
+    rings.push({ b, eb: b + opt.offset / 1000, type: cur, state: 0, best: Infinity, grade: '', dieT: 0 });
   }
 }
-
+const hud = {};
 function resetStats(){
-  stats = { score: 0, combo: 0, maxCombo: 0, perfect: 0, good: 0, miss: 0, floaters: [], bursts: [], pulse: 0 };
-  hud.score = hud.acc = hud.kcal = hud.combo = null;
+  stats = { score: 0, combo: 0, maxCombo: 0, perfect: 0, good: 0, miss: 0, floaters: [], bursts: [], flash: 0 };
+  hud.score = hud.acc = hud.kcal = hud.stage = null; lyIdx = -2;
   $('#combo').classList.remove('on');
 }
 
 async function beginGame(mode){
-  ensureCtx();
-  showMenuErr('');
-  if(mode === 'cam'){
+  ensureCtx(); showMenuErr('');
+  touchMode = mode === 'touch';
+  if(!touchMode){
     try{ await startCamera(); }
     catch(e){ showMenuErr(camErrMsg(e)); return; }
+    showStatus('正在加载动作识别模型（首次约 12MB，请稍等）…');
+    try{ await withTimeout(loadPose(), 120000); }
+    catch(e){
+      stopCamera(); showStatus('');
+      showMenuErr('动作识别模型没有加载成功，请检查网络后重试。也可以先用“用手指试玩”。');
+      return;
+    }
+    showStatus('');
   }
-  touchMode = mode === 'touch';
   buildRings();
   $('#songName').textContent = song.name;
   $('#game').classList.remove('hidden');
-  $('#game').classList.toggle('touch', touchMode);
   video.classList.toggle('hidden', touchMode);
-  $('#result').classList.add('hidden');
-  $('#menu').classList.add('hidden');
+  $('#tbtns').classList.toggle('hidden', !touchMode);
+  $('#lyric').classList.toggle('hidden', !lyrics);
+  $('#lyCur').textContent = ''; $('#lyNxt').textContent = '';
+  $('#result').classList.add('hidden'); $('#menu').classList.add('hidden');
   resize(); resetStats();
   try{ if('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); }catch(e){}
   const my = ++runId;
   phase = 'count';
+  if(!touchMode){ clf.reset(); gotResult = false; poseStartT = performance.now(); poseLoop(++poseRun); }
   if(!raf) raf = requestAnimationFrame(frame);
-  const cnt = $('#count'); cnt.classList.remove('hidden', 'clear');
-  $('#countTxt').textContent = touchMode ? '手指划过圆环即可得分' : '请后退约 2 米，让全身入镜';
+  const cnt = $('#count'); cnt.classList.remove('hidden');
+  $('#countTxt').textContent = touchMode
+    ? '按住下方的「开」或「交叉」按钮来做动作'
+    : '把手机立在床尾，后置摄像头对着你\n躺好，让髋部到脚踝都入镜';
+  $('#countTxt').style.whiteSpace = 'pre-line';
   for(let n = 3; n >= 1; n--){
     if(my !== runId) return;
     const el = $('#countN'); el.textContent = n; el.style.animation = 'none'; void el.offsetWidth; el.style.animation = '';
@@ -667,7 +846,6 @@ function stopAudio(){
   if(src){ src.onended = null; try{ src.stop(); }catch(e){} try{ src.disconnect(); }catch(e){} src = null; }
   if(actx && actx.state === 'suspended') actx.resume();
 }
-
 function pauseGame(){
   if(phase !== 'play') return;
   phase = 'pause'; actx.suspend(); $('#pauseMenu').classList.remove('hidden');
@@ -692,14 +870,13 @@ $('#quitBtn').addEventListener('click', quitToMenu);
 $('#restartBtn').addEventListener('click', () => { const m = touchMode ? 'touch' : 'cam'; leaveGame(); beginGame(m); });
 
 function finish(){
-  phase = 'end';
   const total = rings.length, hits = stats.perfect + stats.good;
   const acc = total ? hits / total : 0;
   const grade = acc >= 0.9 ? 'S' : acc >= 0.75 ? 'A' : acc >= 0.55 ? 'B' : 'C';
   const gc = { S: '#ffd54a', A: '#5eead4', B: '#8fb4ff', C: '#b8b3cc' }[grade];
   const kcal = (hits * 0.5).toFixed(1);
   let best = 0; const key = 'beatfit_best_' + song.name;
-  try{ best = +(localStorage.getItem(key) || 0); if(stats.score > best){ localStorage.setItem(key, String(stats.score)); } }catch(e){}
+  try{ best = +(localStorage.getItem(key) || 0); if(stats.score > best) localStorage.setItem(key, String(stats.score)); }catch(e){}
   const isNew = stats.score > best;
   $('#rSong').textContent = song.name;
   const g = $('#rGrade'); g.textContent = grade; g.style.setProperty('--gc', gc);
@@ -716,112 +893,181 @@ function finish(){
 $('#againBtn').addEventListener('click', () => { $('#result').classList.add('hidden'); beginGame(touchMode ? 'touch' : 'cam'); });
 $('#changeBtn').addEventListener('click', quitToMenu);
 
+/* ---------- 手指 / 键盘试玩 ---------- */
+function holdTouch(label){ touchLabel = label; touchUntil = Infinity; }
+function releaseTouch(){ touchUntil = performance.now() + 220; }
+for(const [id, label] of [['#tbOpen', 'open'], ['#tbCross', 'cross']]){
+  const b = $(id);
+  b.addEventListener('pointerdown', e => { e.preventDefault(); holdTouch(label); });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => b.addEventListener(ev, releaseTouch));
+}
+window.addEventListener('keydown', e => { if(!touchMode) return; if(e.key === 'ArrowLeft') holdTouch('open'); if(e.key === 'ArrowRight') holdTouch('cross'); });
+window.addEventListener('keyup', e => { if(touchMode && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) releaseTouch(); });
+
 /* =================================================================
    每帧：判定 + 绘制
    ================================================================= */
-const hud = {};
+let firstPending = 0;
 function judge(t){
-  const thr = 0.30 - 0.025 * opt.sens;
-  for(const r of rings){
+  const now = performance.now();
+  const label = currentLabel(now);
+  const ts = t - (touchMode ? 0 : POSE_LAT);       // 画面对应的实际时刻
+  while(firstPending < rings.length && rings[firstPending].state !== 0) firstPending++;
+  for(let i = firstPending; i < rings.length; i++){
+    const r = rings[i];
     if(r.state !== 0) continue;
-    const dt = t - r.eb;
-    if(dt < -HIT_WIN) break;               // 后面的圆环还没到窗口
-    if(dt > HIT_WIN){ setMiss(r); continue; }
-    if(ringMotion(r.fx, r.fy) >= thr){
-      const g = Math.abs(dt) <= PERFECT_WIN ? 'perfect' : 'good';
-      r.state = 1; r.grade = g;
-      stats.combo++; stats.maxCombo = Math.max(stats.maxCombo, stats.combo);
-      stats[g]++;
-      stats.score += Math.round((g === 'perfect' ? 100 : 60) * (1 + Math.floor(stats.combo / 10) * 0.1));
-      const x = r.fx * W, y = r.fy * H, now = performance.now();
-      stats.floaters.push({ x, y: y - ringR * 1.1, txt: g === 'perfect' ? 'Perfect!' : 'Good', col: g === 'perfect' ? '#ffd54a' : '#5ce1ff', t: now });
-      stats.bursts.push({ x, y, col: g === 'perfect' ? '#ffd54a' : '#5ce1ff', t: now });
-      pulseCombo();
+    const dt = ts - r.eb;
+    if(dt < -HIT_WIN) break;
+    if(label === r.type){
+      const ad = Math.abs(dt);
+      if(ad < r.best) r.best = ad;
+      if(ad <= PERFECT_WIN){ setHit(r, 'perfect', now); continue; }
     }
+    if(dt > HIT_WIN){ if(r.best < Infinity) setHit(r, 'good', now); else setMiss(r, now); }
   }
 }
-function setMiss(r){
-  r.state = 2; stats.miss++; stats.combo = 0;
-  stats.floaters.push({ x: r.fx * W, y: r.fy * H - ringR * 1.1, txt: 'Miss', col: '#ff8fa8', t: performance.now() });
+function setHit(r, g, now){
+  r.state = 1; r.grade = g; r.dieT = now;
+  stats.combo++; stats.maxCombo = Math.max(stats.maxCombo, stats.combo); stats[g]++;
+  stats.score += Math.round((g === 'perfect' ? 100 : 60) * (1 + Math.floor(stats.combo / 10) * 0.1));
+  const col = g === 'perfect' ? '#ffd54a' : '#5ce1ff';
+  stats.floaters.push({ txt: g === 'perfect' ? 'Perfect!' : 'Good', col, t: now });
+  stats.bursts.push({ col, t: now });
+  stats.flash = 1;
+  const c = $('#combo');
+  if(stats.combo >= 2){ c.textContent = stats.combo + ' 连击'; c.classList.add('on'); c.classList.remove('pop'); void c.offsetWidth; c.classList.add('pop'); }
+}
+function setMiss(r, now){
+  r.state = 2; r.dieT = now; stats.miss++; stats.combo = 0;
+  stats.floaters.push({ txt: 'Miss', col: '#ff8fa8', t: now });
   $('#combo').classList.remove('on');
 }
-function pulseCombo(){
-  const c = $('#combo');
-  if(stats.combo >= 2){
-    c.textContent = stats.combo + ' 连击'; c.classList.add('on');
-    c.classList.remove('pop'); void c.offsetWidth; c.classList.add('pop');
-  }
+
+function drawDot(x, y, type, alpha, gray){
+  const R = ringR, col = TYPES[type];
+  cx.save(); cx.globalAlpha = alpha;
+  const grd = cx.createRadialGradient(x, y - R * 0.3, R * 0.1, x, y, R);
+  if(gray){ grd.addColorStop(0, 'rgba(190,190,205,.9)'); grd.addColorStop(1, 'rgba(90,90,110,.85)'); cx.shadowColor = 'rgba(0,0,0,0)'; }
+  else{ grd.addColorStop(0, col.fill0); grd.addColorStop(1, col.fill1); cx.shadowColor = col.glow; cx.shadowBlur = R * 0.7; }
+  cx.beginPath(); cx.arc(x, y, R, 0, TAU); cx.fillStyle = grd; cx.fill();
+  cx.shadowBlur = 0; cx.lineWidth = 3; cx.strokeStyle = gray ? 'rgba(220,220,230,.7)' : col.rim; cx.stroke();
+  cx.textAlign = 'center'; cx.textBaseline = 'middle';
+  const fs = type === 'open' ? R * 0.95 : R * 0.68;
+  cx.font = '900 ' + Math.round(fs) + 'px "PingFang SC","Microsoft YaHei",sans-serif';
+  cx.lineJoin = 'round'; cx.lineWidth = Math.max(3, R * 0.14); cx.strokeStyle = 'rgba(30,0,50,.85)';
+  cx.strokeText(col.label, x, y + R * 0.04);
+  cx.fillStyle = '#fff'; cx.fillText(col.label, x, y + R * 0.04);
+  cx.restore();
 }
 
-function drawRing(r, t){
-  const dt = r.eb - t;
-  if(dt > APPROACH || r.state !== 0) return;
-  if(dt < -HIT_WIN - 0.1) return;
-  const x = r.fx * W, y = r.fy * H, R = ringR, col = COLORS[r.side];
-  const k = clamp(1 - dt / APPROACH, 0, 1);
-  const a = clamp((APPROACH - dt) / 0.3, 0, 1) * (dt < 0 ? clamp(1 + dt / 0.35, 0.25, 1) : 1);
-  ctx.save(); ctx.globalAlpha = a;
-  const grd = ctx.createRadialGradient(x, y - R * 0.25, R * 0.1, x, y, R);
-  grd.addColorStop(0, col.fill0); grd.addColorStop(1, col.fill1);
-  ctx.shadowColor = col.glow; ctx.shadowBlur = R * 0.9;
-  ctx.beginPath(); ctx.arc(x, y, R, 0, TAU); ctx.fillStyle = grd; ctx.fill();
-  ctx.shadowBlur = 0; ctx.lineWidth = 3; ctx.strokeStyle = col.rim; ctx.stroke();
-  ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.font = '800 ' + Math.round(R * 0.95) + 'px "PingFang SC","Microsoft YaHei",sans-serif';
-  ctx.shadowColor = 'rgba(255,255,255,.8)'; ctx.shadowBlur = 8;
-  ctx.fillText(r.label, x, y + R * 0.05);
-  ctx.shadowBlur = 0;
-  const ar = R * (1 + 2.1 * (1 - k));
-  ctx.beginPath(); ctx.arc(x, y, ar, 0, TAU);
-  ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(255,255,255,.95)'; ctx.stroke();
-  ctx.restore();
+function drawLane(){
+  const h = ringR * 2 + 22;
+  cx.save();
+  cx.beginPath();
+  if(cx.roundRect) cx.roundRect(10, laneY - h / 2, W - 20, h, h / 2); else cx.rect(10, laneY - h / 2, W - 20, h);
+  cx.fillStyle = 'rgba(12,8,30,.55)'; cx.fill();
+  cx.lineWidth = 1.5; cx.strokeStyle = 'rgba(255,255,255,.18)'; cx.stroke();
+  cx.restore();
+  // 判定圈
+  const fl = stats ? stats.flash : 0;
+  cx.save();
+  cx.shadowColor = '#fff'; cx.shadowBlur = 14 + fl * 22;
+  cx.beginPath(); cx.arc(tx, laneY, ringR * 1.14, 0, TAU);
+  cx.lineWidth = 3.5 + fl * 2; cx.strokeStyle = 'rgba(255,255,255,' + (0.9 + fl * 0.1) + ')'; cx.stroke();
+  cx.restore();
+  if(stats) stats.flash = Math.max(0, stats.flash - 0.06);
+}
+
+function drawRings(t, now){
+  for(const r of rings){
+    const x = tx + (r.eb - t) * speed;
+    if(x > W + ringR * 2) break;                       // 后面的还没进场
+    if(r.state === 1){
+      const p = (now - r.dieT) / 220; if(p >= 1) continue;
+      cx.save(); cx.globalAlpha = 1 - p; cx.translate(tx, laneY); cx.scale(1 + p * 0.5, 1 + p * 0.5);
+      drawDot(0, 0, r.type, 1, false); cx.restore();
+    }else if(r.state === 2){
+      if(x < -ringR * 2) continue;
+      drawDot(x, laneY, r.type, 0.55, true);
+    }else{
+      if(x < -ringR * 2) continue;
+      drawDot(x, laneY, r.type, 1, false);
+    }
+  }
 }
 
 function drawEffects(now){
   for(let i = stats.bursts.length - 1; i >= 0; i--){
-    const b = stats.bursts[i], p = (now - b.t) / 500;
+    const b = stats.bursts[i], p = (now - b.t) / 480;
     if(p >= 1){ stats.bursts.splice(i, 1); continue; }
-    ctx.save(); ctx.globalAlpha = 1 - p; ctx.strokeStyle = b.col; ctx.lineWidth = 5 * (1 - p) + 1;
-    ctx.shadowColor = b.col; ctx.shadowBlur = 16;
-    ctx.beginPath(); ctx.arc(b.x, b.y, ringR * (1 + p * 1.3), 0, TAU); ctx.stroke(); ctx.restore();
+    cx.save(); cx.globalAlpha = 1 - p; cx.strokeStyle = b.col; cx.lineWidth = 5 * (1 - p) + 1;
+    cx.shadowColor = b.col; cx.shadowBlur = 16;
+    cx.beginPath(); cx.arc(tx, laneY, ringR * (1.15 + p * 1.2), 0, TAU); cx.stroke(); cx.restore();
   }
   for(let i = stats.floaters.length - 1; i >= 0; i--){
     const f = stats.floaters[i], p = (now - f.t) / 750;
     if(p >= 1){ stats.floaters.splice(i, 1); continue; }
-    ctx.save(); ctx.globalAlpha = 1 - p * p; ctx.fillStyle = f.col;
-    ctx.font = '900 ' + Math.round(ringR * 0.6) + 'px system-ui,sans-serif';
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.shadowColor = 'rgba(0,0,0,.6)'; ctx.shadowBlur = 8;
-    ctx.fillText(f.txt, f.x, f.y - p * 34); ctx.restore();
+    cx.save(); cx.globalAlpha = 1 - p * p; cx.fillStyle = f.col;
+    cx.font = '900 ' + Math.round(ringR * 0.66) + 'px system-ui,sans-serif';
+    cx.textAlign = 'center'; cx.textBaseline = 'middle';
+    cx.shadowColor = 'rgba(0,0,0,.7)'; cx.shadowBlur = 8;
+    cx.fillText(f.txt, tx, laneY + ringR * 2.0 + p * 18); cx.restore();
   }
 }
 
-function frame(now){
-  raf = requestAnimationFrame(frame);
-  if(!W) return;
-  sampleMotion(now);
-  ctx.clearRect(0, 0, W, H);
-  if(touchMode){
-    const g = ctx.createLinearGradient(0, 0, W, H);
-    g.addColorStop(0, '#1a1240'); g.addColorStop(1, '#3a1240');
-    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-    ctx.fillStyle = 'rgba(255,255,255,.06)';
-    for(let y = 24; y < H; y += 32) for(let x = 24; x < W; x += 32){ ctx.beginPath(); ctx.arc(x, y, 1.5, 0, TAU); ctx.fill(); }
+function toScreen(p){
+  const vw = video.videoWidth, vh = video.videoHeight, sc = Math.max(W / vw, H / vh);
+  const sw = W / sc, sh = H / sc, sx = (vw - sw) / 2, sy = (vh - sh) / 2;
+  let x = (p.x * vw - sx) * sc; const y = (p.y * vh - sy) * sc;
+  if(opt.facing === 'user') x = W - x;
+  return { x, y };
+}
+function drawSkeleton(now){
+  if(touchMode || !cameraOn || !video.videoWidth || !lm || now - lmT > 500) return;
+  const col = curLabel === 'open' ? '#3dffd0' : (curLabel === 'cross' ? '#ff7bff' : 'rgba(255,255,255,.85)');
+  const vis = p => p && (p.visibility === undefined || p.visibility > 0.3);
+  cx.save(); cx.lineCap = 'round'; cx.strokeStyle = col; cx.fillStyle = col; cx.lineWidth = 4;
+  cx.shadowColor = col; cx.shadowBlur = 10;
+  for(const [a, b] of [[23, 25], [25, 27], [24, 26], [26, 28], [23, 24]]){
+    if(!vis(lm[a]) || !vis(lm[b])) continue;
+    const p = toScreen(lm[a]), q = toScreen(lm[b]);
+    cx.beginPath(); cx.moveTo(p.x, p.y); cx.lineTo(q.x, q.y); cx.stroke();
   }
-  ctx.save(); ctx.globalAlpha = 0.55; ctx.imageSmoothingEnabled = true; ctx.drawImage(ovc, 0, 0, W, H); ctx.restore();
-
-  if(phase === 'play' || phase === 'pause'){
-    const t = songTime();
-    if(phase === 'play'){
-      judge(t);
-      if(t > song.info.duration + 0.4){ finish(); return; }
-    }
-    for(const r of rings) drawRing(r, t);
-    drawEffects(now);
-    updateHud(t);
+  for(const [i, r] of [[23, 5], [24, 5], [25, 6], [26, 6], [27, 9], [28, 9]]){
+    if(!vis(lm[i])) continue;
+    const p = toScreen(lm[i]); cx.beginPath(); cx.arc(p.x, p.y, r, 0, TAU); cx.fill();
   }
+  cx.restore();
+}
+function drawChip(now){
+  let txt, col = 'rgba(255,255,255,.9)';
+  if(touchMode){ const l = currentLabel(now); txt = l === 'none' ? '按住按钮做动作' : '当前：' + TYPES[l].label; }
+  else if(!gotResult){ txt = now - poseStartT > 9000 ? '动作识别没有响应，请刷新页面重试' : '动作识别启动中…'; }
+  else if(!lm || now - lmT > 500){ txt = '没看到你的腿，请调整手机位置'; col = '#ffb3c8'; }
+  else{
+    const l = currentLabel(now);
+    txt = l === 'none' ? '识别中…' : '当前动作：' + TYPES[l].label;
+    if(l !== 'none') col = TYPES[l].glow;
+  }
+  cx.save();
+  cx.font = '700 14px "PingFang SC","Microsoft YaHei",sans-serif';
+  const w = cx.measureText(txt).width + 26, h = 30, x = tx - w / 2 < 12 ? 12 : tx - w / 2, y = laneY + ringR * 3.0;
+  cx.beginPath(); if(cx.roundRect) cx.roundRect(x, y, w, h, 15); else cx.rect(x, y, w, h);
+  cx.fillStyle = 'rgba(10,8,25,.72)'; cx.fill();
+  cx.fillStyle = col; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText(txt, x + w / 2, y + h / 2 + 1);
+  cx.restore();
 }
 
+let lyIdx = -2;
+function updateLyrics(t){
+  if(!lyrics) return;
+  let lo = 0, hi = lyrics.length - 1, idx = -1;
+  while(lo <= hi){ const m = (lo + hi) >> 1; if(lyrics[m].t <= t){ idx = m; lo = m + 1; } else hi = m - 1; }
+  if(idx === lyIdx) return; lyIdx = idx;
+  const cur = idx >= 0 ? lyrics[idx].text : '';
+  let nxt = ''; for(let k = idx + 1; k < lyrics.length; k++){ if(lyrics[k].text){ nxt = lyrics[k].text; break; } }
+  $('#lyCur').textContent = cur; $('#lyNxt').textContent = nxt;
+}
 function updateHud(t){
   const p = clamp(t / song.info.duration, 0, 1);
   $('#barFill').style.width = (p * 100).toFixed(1) + '%';
@@ -833,8 +1079,39 @@ function updateHud(t){
   if(hud.acc !== acc){ hud.acc = acc; $('#acc').textContent = acc; }
   const kc = ((stats.perfect + stats.good) * 0.5).toFixed(1);
   if(hud.kcal !== kc){ hud.kcal = kc; $('#kcal').textContent = kc; }
+  updateLyrics(t);
 }
 
+function frame(now){
+  raf = requestAnimationFrame(frame);
+  if(!W) return;
+  cx.clearRect(0, 0, W, H);
+  if(touchMode){
+    const g = cx.createLinearGradient(0, 0, W, H);
+    g.addColorStop(0, '#1a1240'); g.addColorStop(1, '#3a1240');
+    cx.fillStyle = g; cx.fillRect(0, 0, W, H);
+  }
+  drawSkeleton(now);
+  drawLane();
+  if(phase === 'play' || phase === 'pause'){
+    const t = songTime();
+    if(phase === 'play'){
+      judge(t);
+      if(t > song.info.duration + 0.4){ finish(); return; }
+    }
+    drawRings(t, now);
+    drawEffects(now);
+    updateHud(t);
+  }
+  if(phase === 'count' || phase === 'play' || phase === 'pause') drawChip(now);
+}
+
+/* 调试/自动化测试用的只读入口 */
+window.__beatfit = { get phase(){ return phase; }, get rings(){ return rings; }, get stats(){ return stats; }, songTime: () => songTime(), get gotResult(){ return gotResult; }, get hasLandmarks(){ return !!lm; }, get label(){ return currentLabel(performance.now()); } };
+
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
 })();
 </script>
 </body>
